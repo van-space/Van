@@ -1,3 +1,4 @@
+import daisyui from 'daisyui'
 import {
   createVariableColors,
   variableColorsPlugin,
@@ -7,6 +8,7 @@ import resolveConfig from 'tailwindcss/resolveConfig'
 import type { PluginAPI } from 'tailwindcss/types/config'
 
 import { addDynamicIconSelectors } from '@iconify/tailwind'
+import typography from '@tailwindcss/typography'
 
 const UIKitColors = {
   red: {
@@ -167,11 +169,9 @@ const UIKitColors = {
   },
 }
 
-const UIKitMaterials = {}
-
 export default resolveConfig({
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
-  darkMode: 'class',
+  darkMode: ['class', 'html.dark'],
   theme: {
     colors: createVariableColors(twColors),
 
@@ -204,16 +204,20 @@ export default resolveConfig({
         screen: '100vh',
       },
 
-      zIndex: {
-        '-1': '-1',
-        1: '1',
-        99: '99',
-      },
       colors: {
         uk: UIKitColors,
         always: { ...twColors },
+        themed: {
+          accent: '#39C5BB',
+          // hover: '#b1f2ed',
+        },
       },
     },
+  },
+
+  daisyui: {
+    themes: ['cupcake', 'dracula'],
+    darkTheme: 'dracula',
   },
 
   plugins: [
@@ -221,7 +225,8 @@ export default resolveConfig({
     addShortcutPlugin,
 
     variableColorsPlugin(twColors),
-
+    daisyui,
+    typography,
     // ColorPlugin,
   ],
 })
