@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation'
 
-import { Toc } from '~/components/widgets/toc'
+import { Toc, TocAutoScroll } from '~/components/widgets/toc'
 import { useNoteByNidQuery } from '~/hooks/data/use-note'
 import { PageDataHolder } from '~/lib/page-holder'
 import { ArticleElementContextProvider } from '~/providers/article/article-element-provider'
@@ -20,10 +20,13 @@ const PageImpl = () => {
       <header>
         <h1>{data?.data?.title}</h1>
       </header>
+
       <ArticleElementContextProvider>
         {mardownResult.jsx}
+
         <NoteLayoutRightSidePortal>
           <Toc className="sticky top-20 mt-20" />
+          <TocAutoScroll />
         </NoteLayoutRightSidePortal>
       </ArticleElementContextProvider>
     </article>

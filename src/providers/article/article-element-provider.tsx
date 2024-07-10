@@ -7,7 +7,7 @@ const [
   ArticleElementContextProviderInternal,
   useArticleElement,
   useSetArticleElement,
-] = createContextState<HTMLDivElement | null>(null)
+] = createContextState<HTMLDivElement | null>(undefined as any)
 
 const ArticleElementContextProvider: Component = ({ children, className }) => {
   return (
@@ -22,7 +22,6 @@ const Content: Component = ({ children, className }) => {
   const setter = useSetArticleElement()
   useEffect(() => {
     setter(contentRef)
-    console.log(contentRef)
   }, [contentRef, setter])
   return (
     <div className={clsxm('relative', className)} ref={setContentRef}>
