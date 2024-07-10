@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 html {
   font-size: 14px;
   line-height: 1.5;
@@ -8,4 +9,8 @@ html {
 
 .prose {
   max-width: 100% !important;
+}
+
+* {
+  @apply duration-200;
 }

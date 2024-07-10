@@ -74,6 +74,9 @@ importers:
       markdown-to-jsx:
         specifier: npm:@innei/markdown-to-jsx@7.1.3-beta.2
         version: '@innei/markdown-to-jsx@7.1.3-beta.2(react@18.2.0)'
+      mdast-util-toc:
+        specifier: 6.1.1
+        version: 6.1.1
       next:
         specifier: 13.4.5
         version: 13.4.5(@babel/core@7.21.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -174,6 +177,9 @@ importers:
         specifier: 13.9.0
         version: 13.9.0
     devDependencies:
+      '@iconify-json/material-symbols':
+        specifier: 1.1.47
+        version: 1.1.47
       '@iconify-json/mingcute':
         specifier: 1.1.6
         version: 1.1.6
@@ -270,6 +276,9 @@ importers:
       rimraf:
         specifier: 5.0.1
         version: 5.0.1
+      tailwind-scrollbar:
+        specifier: 3.0.4
+        version: 3.0.4(tailwindcss@3.3.2)
       tailwind-variants:
         specifier: 0.1.6
         version: 0.1.6(tailwindcss@3.3.2)
@@ -1085,6 +1094,9 @@ packages:
       '@vue/compiler-sfc':
         optional: true
 
+  '@iconify-json/material-symbols@1.1.47':
+    resolution: {integrity: sha512-+y0r2zJRe1OBReVlP8e88otQHiyS8g1xQ0s0fR2m1QYF3ObQdlvtItWOjTNOmCNm0mWvE4V7brn4xIAvR5rY4g==}
+
   '@iconify-json/mingcute@1.1.6':
     resolution: {integrity: sha512-fkwDIZo7AGv3hZukPNUxCP+y0ZsZszuc7ZP5OPrLcZEQ4UF1rhhhitJUKtHr7Jb4zlZGdhWQUB/j6baXQsgjfQ==}
 
@@ -1435,6 +1447,9 @@ packages:
 
   '@types/estree@1.0.1':
     resolution: {integrity: sha512-LG4opVs2ANWZ1TJoKc937iMmNstM/d0ae1vNbnBvBhqCSezgVUOzcLCqbI5elV8Vy6WKwKjaqR+zO9VKirBBCA==}
+
+  '@types/extend@3.0.4':
+    resolution: {integrity: sha512-ArMouDUTJEz1SQRpFsT2rIw7DeqICFv5aaVzLSIYMYQSLcwcGOfT3VyglQs/p7K3F7fT4zxr0NWxYZIdifD6dA==}
 
   '@types/fs-extra@11.0.1':
     resolution: {integrity: sha512-MxObHvNl4A69ofaTRU8DFqvgzzv8s9yRtaPPm5gud9HDNvpB3GPQFvNuTWAI59B9huVGV5jXYJwbCsmBsOGYWA==}
@@ -3289,6 +3304,9 @@ packages:
   mdast-util-to-string@3.2.0:
     resolution: {integrity: sha512-V4Zn/ncyN1QNSqSBxTrMOLpjr+IKdHl2v3KVLoWmDPscP4r9GcCi71gjgvUV1SFSKh92AjAG4peFuBl2/YgCJg==}
 
+  mdast-util-toc@6.1.1:
+    resolution: {integrity: sha512-Er21728Kow8hehecK2GZtb7Ny3omcoPUVrmObiSUwmoRYVZaXLR751QROEFjR8W/vAQdHMLj49Lz20J55XaNpw==}
+
   media-query-parser@2.0.2:
     resolution: {integrity: sha512-1N4qp+jE0pL5Xv4uEcwVUhIkwdUO3S/9gML90nqKA7v7FcOS5vUtatfzok9S9U1EJU8dHWlcv95WLnKmmxZI9w==}
 
@@ -4482,6 +4500,12 @@ packages:
 
   tailwind-merge@1.13.1:
     resolution: {integrity: sha512-tRtRN22TDokGi2TuYSvuHQuuW6BJ/zlUEG+iYpAQ9i66msc/0eU/+HPccbPnNNH0mCPp0Ob8thaC8Uy9CxHitQ==}
+
+  tailwind-scrollbar@3.0.4:
+    resolution: {integrity: sha512-X/QBsn/C5u9x6/YvTc1Zo7b09Gqs5BfDe0UK/8LDQUv8IEBKF+p2ISTRwvAr50MH0hn/wTyCEOann7uXoa1/2Q==}
+    engines: {node: '>=12.13.0'}
+    peerDependencies:
+      tailwindcss: 3.x
 
   tailwind-variants@0.1.6:
     resolution: {integrity: sha512-jWk724Ov5Dm64hKBUQVf9s8pAQOpcMIQTqM8LSjzqOKGZdUVcRUmtxszG5VzNOe3/gPNG6g/CacSniNZolOB8w==}
@@ -5708,6 +5732,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@iconify-json/material-symbols@1.1.47':
+    dependencies:
+      '@iconify/types': 2.0.0
+
   '@iconify-json/mingcute@1.1.6':
     dependencies:
       '@iconify/types': 2.0.0
@@ -5732,12 +5760,12 @@ snapshots:
 
   '@innei/eslint-config-ts@0.13.2(typescript@5.1.3)':
     dependencies:
-      '@typescript-eslint/eslint-plugin': 7.11.0(@typescript-eslint/parser@7.15.0(eslint@8.42.0)(typescript@5.1.3))(eslint@8.57.0)(typescript@5.1.3)
+      '@typescript-eslint/eslint-plugin': 7.11.0(@typescript-eslint/parser@7.15.0(eslint@8.42.0)(typescript@5.1.3))(eslint@8.42.0)(typescript@5.1.3)
       '@typescript-eslint/parser': 7.15.0(eslint@8.57.0)(typescript@5.1.3)
       eslint: 8.57.0
       eslint-config-prettier: 9.1.0(eslint@8.57.0)
       eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.15.0(eslint@8.57.0)(typescript@5.1.3))(eslint@8.57.0)
-      eslint-plugin-unused-imports: 4.0.0(@typescript-eslint/eslint-plugin@7.11.0(@typescript-eslint/parser@7.15.0(eslint@8.42.0)(typescript@5.1.3))(eslint@8.42.0)(typescript@5.1.3))(eslint@8.57.0)
+      eslint-plugin-unused-imports: 4.0.0(@typescript-eslint/eslint-plugin@7.11.0(@typescript-eslint/parser@7.15.0(eslint@8.42.0)(typescript@5.1.3))(eslint@8.57.0)(typescript@5.1.3))(eslint@8.57.0)
       typescript: 5.1.3
     transitivePeerDependencies:
       - eslint-import-resolver-typescript
@@ -6140,6 +6168,8 @@ snapshots:
 
   '@types/estree@1.0.1': {}
 
+  '@types/extend@3.0.4': {}
+
   '@types/fs-extra@11.0.1':
     dependencies:
       '@types/jsonfile': 6.1.1
@@ -6215,7 +6245,7 @@ snapshots:
 
   '@types/which@3.0.0': {}
 
-  '@typescript-eslint/eslint-plugin@7.11.0(@typescript-eslint/parser@7.15.0(eslint@8.42.0)(typescript@5.1.3))(eslint@8.57.0)(typescript@5.1.3)':
+  '@typescript-eslint/eslint-plugin@7.11.0(@typescript-eslint/parser@7.15.0(eslint@8.42.0)(typescript@5.1.3))(eslint@8.42.0)(typescript@5.1.3)':
     dependencies:
       '@eslint-community/regexpp': 4.11.0
       '@typescript-eslint/parser': 7.15.0(eslint@8.57.0)(typescript@5.1.3)
@@ -6223,7 +6253,7 @@ snapshots:
       '@typescript-eslint/type-utils': 7.11.0(eslint@8.57.0)(typescript@5.1.3)
       '@typescript-eslint/utils': 7.11.0(eslint@8.57.0)(typescript@5.1.3)
       '@typescript-eslint/visitor-keys': 7.11.0
-      eslint: 8.57.0
+      eslint: 8.42.0
       graphemer: 1.4.0
       ignore: 5.3.1
       natural-compare: 1.4.0
@@ -7278,12 +7308,12 @@ snapshots:
       semver: 6.3.0
       string.prototype.matchall: 4.0.8
 
-  eslint-plugin-unused-imports@4.0.0(@typescript-eslint/eslint-plugin@7.11.0(@typescript-eslint/parser@7.15.0(eslint@8.42.0)(typescript@5.1.3))(eslint@8.42.0)(typescript@5.1.3))(eslint@8.57.0):
+  eslint-plugin-unused-imports@4.0.0(@typescript-eslint/eslint-plugin@7.11.0(@typescript-eslint/parser@7.15.0(eslint@8.42.0)(typescript@5.1.3))(eslint@8.57.0)(typescript@5.1.3))(eslint@8.57.0):
     dependencies:
       eslint: 8.57.0
       eslint-rule-composer: 0.3.0
     optionalDependencies:
-      '@typescript-eslint/eslint-plugin': 7.11.0(@typescript-eslint/parser@7.15.0(eslint@8.42.0)(typescript@5.1.3))(eslint@8.57.0)(typescript@5.1.3)
+      '@typescript-eslint/eslint-plugin': 7.11.0(@typescript-eslint/parser@7.15.0(eslint@8.42.0)(typescript@5.1.3))(eslint@8.42.0)(typescript@5.1.3)
 
   eslint-rule-composer@0.3.0: {}
 
@@ -8438,6 +8468,16 @@ snapshots:
   mdast-util-to-string@3.2.0:
     dependencies:
       '@types/mdast': 3.0.11
+
+  mdast-util-toc@6.1.1:
+    dependencies:
+      '@types/extend': 3.0.4
+      '@types/mdast': 3.0.11
+      extend: 3.0.2
+      github-slugger: 2.0.0
+      mdast-util-to-string: 3.2.0
+      unist-util-is: 5.2.1
+      unist-util-visit: 4.1.2
 
   media-query-parser@2.0.2:
     dependencies:
@@ -9870,6 +9910,10 @@ snapshots:
   supports-preserve-symlinks-flag@1.0.0: {}
 
   tailwind-merge@1.13.1: {}
+
+  tailwind-scrollbar@3.0.4(tailwindcss@3.3.2):
+    dependencies:
+      tailwindcss: 3.3.2
 
   tailwind-variants@0.1.6(tailwindcss@3.3.2):
     dependencies:
