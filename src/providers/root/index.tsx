@@ -8,6 +8,7 @@ import type { PropsWithChildren } from 'react'
 import { DebugProvider } from './debug-provider'
 import { JotaiStoreProvider } from './jotai-provider'
 import { ViewportProvider } from './viewport-provider'
+import { SocketProvider } from './socket-provider'
 
 const ProviderComposer: Component<{
   contexts: JSX.Element[]
@@ -18,10 +19,11 @@ const ProviderComposer: Component<{
 }
 
 const contexts: JSX.Element[] = [
-  <ThemeProvider attribute="class" key="themeProvider" />,
+  <ThemeProvider key="themeProvider" />,
   <ReactQueryProvider key="reactQueryProvider" />,
   <JotaiStoreProvider key="jotaiStoreProvider" />,
   <ViewportProvider key="viewportProvider" />,
+  <SocketProvider key="socketProvider" />,
   <DebugProvider key="debugProvider" />,
 ]
 export function Providers({ children }: PropsWithChildren) {
