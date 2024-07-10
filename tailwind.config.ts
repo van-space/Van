@@ -1,8 +1,4 @@
 import daisyui from 'daisyui'
-import {
-  createVariableColors,
-  variableColorsPlugin,
-} from 'tailwindcss-variable-colors'
 import twColors from 'tailwindcss/colors'
 import resolveConfig from 'tailwindcss/resolveConfig'
 import type { PluginAPI } from 'tailwindcss/types/config'
@@ -173,7 +169,7 @@ export default resolveConfig({
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   darkMode: ['class', 'html.dark'],
   theme: {
-    colors: createVariableColors(twColors),
+    // colors: createVariableColors(twColors),
 
     extend: {
       fontFamily: {
@@ -182,11 +178,6 @@ export default resolveConfig({
       screens: {
         'light-mode': { raw: '(prefers-color-scheme: light)' },
         'dark-mode': { raw: '(prefers-color-scheme: dark)' },
-
-        phone: { raw: '(max-width: 568px)' },
-        desktop: { raw: '(min-width: 1100px)' },
-        tablet: { raw: '(max-width: 1099px)' },
-        wider: { raw: '(min-width: 1500px)' },
 
         'w-screen': '100vw',
         'h-screen': '100vh',
@@ -207,26 +198,74 @@ export default resolveConfig({
       colors: {
         uk: UIKitColors,
         always: { ...twColors },
-        themed: {
-          accent: '#39C5BB',
-          // hover: '#b1f2ed',
-        },
       },
     },
   },
 
   daisyui: {
-    themes: ['cupcake', 'dracula'],
-    darkTheme: 'dracula',
+    themes: [
+      {
+        light: {
+          'color-scheme': 'light',
+          primary: '#39C5BB',
+          // 'primary-focus': '#25CCA0',
+          // 'primary-content': UIKitColors.label.primary.light,
+          secondary: '#6495ed',
+          // 'secondary-foucs': '#92bbff',
+          // 'secondary-content': UIKitColors.label.secondary.light,
+          accent: '#39C5BB',
+          // 'accent-focus': '#25CCA0',
+          // 'accent-content': UIKitColors.label.primary.light,
+
+          neutral: UIKitColors.grey3.light,
+
+          'base-100': UIKitColors.background.primary.light,
+
+          'base-content': UIKitColors.label.primary.light,
+
+          info: UIKitColors.blue.light,
+          success: UIKitColors.green.light,
+          warning: UIKitColors.orange.light,
+          error: UIKitColors.red.light,
+
+          '--rounded-btn': '1.9rem',
+          '--tab-border': '2px',
+          '--tab-radius': '.5rem',
+        },
+      },
+      {
+        dark: {
+          'color-scheme': 'dark',
+          primary: '#1f8f93',
+          secondary: '#92bbff',
+          accent: '#1f8f93',
+
+          neutral: UIKitColors.grey3.dark,
+
+          'base-100': UIKitColors.background.primary.dark,
+          'base-content': UIKitColors.label.primary.dark,
+
+          info: UIKitColors.blue.dark,
+          success: UIKitColors.green.dark,
+          warning: UIKitColors.orange.dark,
+          error: UIKitColors.red.dark,
+
+          '--rounded-btn': '1.9rem',
+          '--tab-border': '2px',
+          '--tab-radius': '.5rem',
+        },
+      },
+    ],
+    darkTheme: 'dark',
   },
 
   plugins: [
     addDynamicIconSelectors(),
     addShortcutPlugin,
 
-    variableColorsPlugin(twColors),
     daisyui,
     typography,
+    // variableColorsPlugin(twColors),
     // ColorPlugin,
   ],
 })
