@@ -167,7 +167,7 @@ const UIKitColors = {
 
 export default resolveConfig({
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
-  darkMode: ['class', 'html.dark'],
+  darkMode: ['class', '[data-theme="dark"]'],
   theme: {
     // colors: createVariableColors(twColors),
 
@@ -219,7 +219,7 @@ export default resolveConfig({
 
           neutral: UIKitColors.grey3.light,
 
-          'base-100': UIKitColors.background.primary.light,
+          'base-100': '#F9FDFD',
 
           'base-content': UIKitColors.label.primary.light,
 
