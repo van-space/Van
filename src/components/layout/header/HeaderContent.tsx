@@ -102,7 +102,7 @@ function ForDesktop({
                       'icon',
                     )}
                   >
-                    {section.icon}
+                    {/* {section.icon} */}
                   </span>
                   {section.title}
                 </span>
