@@ -24,20 +24,20 @@ importers:
         specifier: 1.0.6
         version: 1.0.6(@types/react-dom@18.2.5)(@types/react@18.2.12)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@sentry/nextjs':
-        specifier: 7.55.0
-        version: 7.55.0(next@13.4.5(@babel/core@7.21.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)(webpack@5.86.0(esbuild@0.17.11))
+        specifier: 7.55.2
+        version: 7.55.2(next@13.4.5(@babel/core@7.21.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)(webpack@5.86.0(esbuild@0.17.11))
       '@sentry/webpack-plugin':
         specifier: 2.2.2
         version: 2.2.2(webpack@5.86.0(esbuild@0.17.11))
       '@tanstack/react-query':
-        specifier: 4.29.12
-        version: 4.29.12(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: 4.29.13
+        version: 4.29.13(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@tanstack/react-query-devtools':
-        specifier: 4.29.12
-        version: 4.29.12(@tanstack/react-query@4.29.12(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: 4.29.13
+        version: 4.29.13(@tanstack/react-query@4.29.13(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@tanstack/react-query-persist-client':
-        specifier: 4.29.12
-        version: 4.29.12(@tanstack/react-query@4.29.12(react-dom@18.2.0(react@18.2.0))(react@18.2.0))
+        specifier: 4.29.13
+        version: 4.29.13(@tanstack/react-query@4.29.13(react-dom@18.2.0(react@18.2.0))(react@18.2.0))
       '@uidotdev/usehooks':
         specifier: 2.0.1
         version: 2.0.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -271,8 +271,8 @@ importers:
         specifier: 6.0.1
         version: 6.0.1(postcss@8.4.24)
       postcss-preset-env:
-        specifier: 8.4.2
-        version: 8.4.2(postcss@8.4.24)
+        specifier: 8.5.0
+        version: 8.5.0(postcss@8.4.24)
       postcss-prune-var:
         specifier: 1.1.1
         version: 1.1.1
@@ -701,8 +701,8 @@ packages:
     peerDependencies:
       postcss: ^8.4
 
-  '@csstools/postcss-relative-color-syntax@1.0.1':
-    resolution: {integrity: sha512-IskxdQqAkx/pyyOEW3Lhn3nvOu5zlaZ8wQljFl5zc3ABl+gEFf2G42yWK3+wX+J0F4jm7OikOigXo9fAISFEmg==}
+  '@csstools/postcss-relative-color-syntax@1.0.2':
+    resolution: {integrity: sha512-juCoVInkgH2TZPfOhyx6tIal7jW37L/0Tt+Vcl1LoxqQA9sxcg3JWYZ98pl1BonDnki6s/M7nXzFQHWsWMeHgw==}
     engines: {node: ^14 || ^16 || >=18}
     peerDependencies:
       postcss: ^8.4
@@ -1487,12 +1487,12 @@ packages:
     resolution: {integrity: sha512-a4H4rvVdz0XDGgNfRqc7zg6rMt2P1P05xBmgfIfztYy94Vciw1QMdboNiT7einr8ra8wogdEaK4Pe2AzYAPBJQ==}
     engines: {node: '>=8'}
 
-  '@sentry-internal/tracing@7.55.0':
-    resolution: {integrity: sha512-Bm82Z2tHcz4BF8CQDfYT5LeZPpuePWNHcxTSknJImPpPlQnol++2WQtloZZOs5FxllXL08UjN3LphRKmiEQsVQ==}
+  '@sentry-internal/tracing@7.55.2':
+    resolution: {integrity: sha512-yBW+R7NfwLrOjpwOJHoOSvGDDoM3ZKod5OKXi7Gd5tYqVm1mCaL0n2/wlNMcGTbPbulLBtgzjoTU1bPJAGhmYw==}
     engines: {node: '>=8'}
 
-  '@sentry/browser@7.55.0':
-    resolution: {integrity: sha512-ukwj7MBkZx0IBDL5MfNcerZp8p5M85m+AZ7LFEw2aMVFSt4HEmp1CPQYpubORMcP+oq+BHGJ6khkvNQlM4D7+g==}
+  '@sentry/browser@7.55.2':
+    resolution: {integrity: sha512-RgA4KOD6t8XHVLm6D2oTh9KW19g3DoQ0QsrUmAq4+giSj2AyDW67VP2V4E72mCZ9Ln9AkNhY0Eh3XuD3opiFQA==}
     engines: {node: '>=8'}
 
   '@sentry/bundler-plugin-core@2.2.2':
@@ -1554,16 +1554,16 @@ packages:
     resolution: {integrity: sha512-DAH8IJNORJJ7kQLqsZuhMkN6cwJjXzFuuUoZor7IIDHIHjtl51W+2F3Stg3+I3ZoKDfJfUNKqhipk2WZjG0FBg==}
     engines: {node: '>=8'}
 
-  '@sentry/core@7.55.0':
-    resolution: {integrity: sha512-ClOcxdAlX7aS52UQQFc7zAIoqyV24wZnDamJTNtnygETGhrjsj4sUyhelF0xecn5gyYJQ0pfT55iBTGacms8Ag==}
+  '@sentry/core@7.55.2':
+    resolution: {integrity: sha512-clzQirownxqADv9+fopyMJTHzaoWedkN2+mi4ro1LxjLgROdXBFurMCC1nT+7cH/xvQ5gMIRkM/y/4gRtKy2Ew==}
     engines: {node: '>=8'}
 
-  '@sentry/integrations@7.55.0':
-    resolution: {integrity: sha512-Jult3Hvplu9PnQLQfLzIKGqgNzAodutyurpQIIAWTjSjDFJPhtM7K4S6tckOYJdsa9SuzL84PHXX/j/a3XUDzQ==}
+  '@sentry/integrations@7.55.2':
+    resolution: {integrity: sha512-QgHx7MKMLMx1e5XgQyeUYtZA+xPc7IjS0MaZTpIRehtxD8Fg1tWkOxV4PP2nUXksLjfkoISo0jpYLtuDSCGFTw==}
     engines: {node: '>=8'}
 
-  '@sentry/nextjs@7.55.0':
-    resolution: {integrity: sha512-lYRtw8917yQDBV4gsuhle3dv/gNhrsOYS3LYlCN+Z7jEjwfI5k5ejm0kZ4VerUBbbgvC4m/KQc2W6MFsHkRsNg==}
+  '@sentry/nextjs@7.55.2':
+    resolution: {integrity: sha512-YIq/gLMCCdcKmPln5zglWHKwQB8KWGblOJ19t/JuHSyffWXL1x1IYyBYgpdjzn6q0AgwsK4IM6TqTb3ISN8wLQ==}
     engines: {node: '>=8'}
     peerDependencies:
       next: ^10.0.8 || ^11.0 || ^12.0 || ^13.0
@@ -1577,34 +1577,34 @@ packages:
     resolution: {integrity: sha512-B4ax8sRd54xj4ad+4eY2EOKNt0Mh1NjuLW1zUKS8HW3h0bmuaDFzGuhEVvEY5H4SaV6tZKj1c0dvnMnyUbYkhA==}
     engines: {node: '>=8'}
 
-  '@sentry/node@7.55.0':
-    resolution: {integrity: sha512-X7v1LoZu6mlZAg7eDz+gU4V0QdfcKcZjI/4bxl6E9yKX6VH5ORuNaNujWXMfzu7Yvu8Dtp+JZ0ZDa+9nEmXbZQ==}
+  '@sentry/node@7.55.2':
+    resolution: {integrity: sha512-43lGfMFFUD38Xerc4DqIuQkEOETHCh31JHUTI6r/gXdzmcKpWRscgH4nAcAUoCu+Myrv0fVXsOa12FM4DPfr8A==}
     engines: {node: '>=8'}
 
-  '@sentry/react@7.55.0':
-    resolution: {integrity: sha512-iZq6pb+mVEkOMcYlU3za8Xk/rtgzy9tPgemPi47O1gqnNfeiWWCEHlwTZbREulQ+EQ+5BmPotUDDyymlp1nM5Q==}
+  '@sentry/react@7.55.2':
+    resolution: {integrity: sha512-7LqM8vQ73boESaOJ9TOmyVKfkUuLHMHU89ltKYsi4s6816Z6cuJ6UcAVUt0Ks4iLzNCVRVJ5OqeY37ge7pEaTA==}
     engines: {node: '>=8'}
     peerDependencies:
       react: 15.x || 16.x || 17.x || 18.x
 
-  '@sentry/replay@7.55.0':
-    resolution: {integrity: sha512-SRWYNgSTGjUBONRJk939MJTynk6fxK524J5Sa/ABHHo+Gow1O8F1q9GY4OIIGkh0Giz8rO6vePWBwuDE6F7B2Q==}
+  '@sentry/replay@7.55.2':
+    resolution: {integrity: sha512-G9iAcI9bvy5X8fvdz0QxF3LJ8oGB0Vxt0iOPdRZYhjIcPbNpE3NaeT6xZlNX1pCcHLroE6BMRF/6TTalcl5Erw==}
     engines: {node: '>=12'}
 
   '@sentry/types@7.53.1':
     resolution: {integrity: sha512-/ijchRIu+jz3+j/zY+7KRPfLSCY14fTx5xujjbOdmEKjmIHQmwPBdszcQm40uwofrR8taV4hbt5MFN+WnjCkCw==}
     engines: {node: '>=8'}
 
-  '@sentry/types@7.55.0':
-    resolution: {integrity: sha512-e8VLiR0NIYd1Y5SlATp3eSARTYmbpNEYsX2b3a1E0NDZj+G5eOqef7k6ab6Y30LUrqrqmkDE0VJqTtnI3pMzzg==}
+  '@sentry/types@7.55.2':
+    resolution: {integrity: sha512-mAtkA8wvUDrLjAAmy9tjn+NiXcxVz/ltbslTKaIW6JNgVRz5kMt1Ny8RJsgqaZqa4LFP8q+IvWw4Vd91kb57rA==}
     engines: {node: '>=8'}
 
   '@sentry/utils@7.53.1':
     resolution: {integrity: sha512-DKJA1LSUOEv4KOR828MzVuLh+drjeAgzyKgN063OEKmnirgjgRgNNS8wUgwpG0Tn2k6ANZGCwrdfzPeSBxshKg==}
     engines: {node: '>=8'}
 
-  '@sentry/utils@7.55.0':
-    resolution: {integrity: sha512-18YU0fLhlr/e7lUyMkh/BEE05N8DG9lzWToz6c9DOYw6pTyt2EXZrxho+BcYufd7IayU0Twb0sp8EX/wfggYxA==}
+  '@sentry/utils@7.55.2':
+    resolution: {integrity: sha512-Yv9XtbOESdN7bkK2AMrKsmKMF5OOVv5v5hVcOqXtSTw1t2oMAtRjXXqGpUo+TkdTOjeoX6dr19ozVFHaGvqHkw==}
     engines: {node: '>=8'}
 
   '@sentry/webpack-plugin@1.20.0':
@@ -1638,20 +1638,20 @@ packages:
   '@tanstack/query-persist-client-core@4.29.11':
     resolution: {integrity: sha512-CSmMZchr+446r79NJ/pjD2yfjqNqFV7k8BnqOq4yTZvXsaQLEIn3tsaU45IsPgs4N7g9OBfPUPDdapSQvck2WQ==}
 
-  '@tanstack/react-query-devtools@4.29.12':
-    resolution: {integrity: sha512-ug4YGQhMhh6QI8/sWJhjXxuvdeehxf1cyxpTifGMH5qreQ5ECHT6vzqG/aKvADQDzqLBGrF0q4wTDnRRYvvtrA==}
+  '@tanstack/react-query-devtools@4.29.13':
+    resolution: {integrity: sha512-nmAaEMzh/dhVl7dukfdWmvj0d2EuLxXC9/34Tl/Yu61oetg3VshC60W6bN5+pgtC3njhQgMguKCAwWYUDc9n+A==}
     peerDependencies:
-      '@tanstack/react-query': 4.29.12
+      '@tanstack/react-query': 4.29.13
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
 
-  '@tanstack/react-query-persist-client@4.29.12':
-    resolution: {integrity: sha512-rh6zZJB+3j8lr+YsEkVadnqmUELmqNFZQzGGsHS5col/YOjYsMe9ppqaUjIMJ2aXnFXye50sbe4KxHhSGoaNVw==}
+  '@tanstack/react-query-persist-client@4.29.13':
+    resolution: {integrity: sha512-grHLh7SfAPZUN/D85sKk9b59xChUydX4p6tFl5z5QOP1Sm9aQw2ZTeXl+QdEtSxB5Cbk0bJ+1GNHcvr9NGmQzg==}
     peerDependencies:
-      '@tanstack/react-query': 4.29.12
+      '@tanstack/react-query': 4.29.13
 
-  '@tanstack/react-query@4.29.12':
-    resolution: {integrity: sha512-zhcN6+zF6cxprxhTHQajHGlvxgK8npnp9uLe9yaWhGc6sYcPWXzyO4raL4HomUzQOPzu3jLvkriJQ7BOrDM8vA==}
+  '@tanstack/react-query@4.29.13':
+    resolution: {integrity: sha512-qF8SHosMU6SzxWa7Ivxp3Q07zXvH+8PBDAlH8CR9ywfT3Y7uOK3jclfwMLzqgoGgDnYCarY2Ra+qDV0+xm19JQ==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
@@ -4145,8 +4145,8 @@ packages:
     peerDependencies:
       postcss: ^8.2.14
 
-  postcss-nesting@11.2.2:
-    resolution: {integrity: sha512-aOTiUniAB1bcPE6GGiynWRa6PZFPhOTAm5q3q5cem6QeSijIHHkWr6gs65ukCZMXeak8yXeZVbBJET3VM+HlhA==}
+  postcss-nesting@11.3.0:
+    resolution: {integrity: sha512-JlS10AQm/RzyrUGgl5irVkAlZYTJ99mNueUl+Qab+TcHhVedLiylWVkKBhRale+rS9yWIJK48JVzQlq3LcSdeA==}
     engines: {node: ^14 || ^16 || >=18}
     peerDependencies:
       postcss: ^8.4
@@ -4174,8 +4174,8 @@ packages:
     peerDependencies:
       postcss: ^8.4
 
-  postcss-preset-env@8.4.2:
-    resolution: {integrity: sha512-Bihxo+FsyVNjsRADiYYnj9Ez0WBSWSSHAe8WvxoMlqrw8H8m6gK9E0MkDd7P6ForoikRIF3I8grGg/pFM6ECRQ==}
+  postcss-preset-env@8.5.0:
+    resolution: {integrity: sha512-aqAbT5dXqYX5ZvicGKQpaW/eDEZFRfnhV6Hn1Jn2bCKEB9L2MgsTdnIsXsZyFUQflIV2wIs9HTEQgkH5duMCNg==}
     engines: {node: ^14 || ^16 || >=18}
     peerDependencies:
       postcss: ^8.4
@@ -5750,7 +5750,7 @@ snapshots:
       postcss: 8.4.24
       postcss-value-parser: 4.2.0
 
-  '@csstools/postcss-relative-color-syntax@1.0.1(postcss@8.4.24)':
+  '@csstools/postcss-relative-color-syntax@1.0.2(postcss@8.4.24)':
     dependencies:
       '@csstools/css-color-parser': 1.2.0(@csstools/css-parser-algorithms@2.2.0(@csstools/css-tokenizer@2.1.1))(@csstools/css-tokenizer@2.1.1)
       '@csstools/css-parser-algorithms': 2.2.0(@csstools/css-tokenizer@2.1.1)
@@ -6066,12 +6066,12 @@ snapshots:
 
   '@innei/eslint-config-ts@0.13.2(typescript@5.1.3)':
     dependencies:
-      '@typescript-eslint/eslint-plugin': 7.11.0(@typescript-eslint/parser@7.15.0(eslint@8.42.0)(typescript@5.1.3))(eslint@8.42.0)(typescript@5.1.3)
+      '@typescript-eslint/eslint-plugin': 7.11.0(@typescript-eslint/parser@7.15.0(eslint@8.42.0)(typescript@5.1.3))(eslint@8.57.0)(typescript@5.1.3)
       '@typescript-eslint/parser': 7.15.0(eslint@8.57.0)(typescript@5.1.3)
       eslint: 8.57.0
       eslint-config-prettier: 9.1.0(eslint@8.57.0)
       eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.15.0(eslint@8.57.0)(typescript@5.1.3))(eslint@8.57.0)
-      eslint-plugin-unused-imports: 4.0.0(@typescript-eslint/eslint-plugin@7.11.0(@typescript-eslint/parser@7.15.0(eslint@8.42.0)(typescript@5.1.3))(eslint@8.57.0)(typescript@5.1.3))(eslint@8.57.0)
+      eslint-plugin-unused-imports: 4.0.0(@typescript-eslint/eslint-plugin@7.11.0(@typescript-eslint/parser@7.15.0(eslint@8.42.0)(typescript@5.1.3))(eslint@8.42.0)(typescript@5.1.3))(eslint@8.57.0)
       typescript: 5.1.3
     transitivePeerDependencies:
       - eslint-import-resolver-typescript
@@ -6441,20 +6441,20 @@ snapshots:
       '@sentry/utils': 7.53.1
       tslib: 1.14.1
 
-  '@sentry-internal/tracing@7.55.0':
+  '@sentry-internal/tracing@7.55.2':
     dependencies:
-      '@sentry/core': 7.55.0
-      '@sentry/types': 7.55.0
-      '@sentry/utils': 7.55.0
+      '@sentry/core': 7.55.2
+      '@sentry/types': 7.55.2
+      '@sentry/utils': 7.55.2
       tslib: 1.14.1
 
-  '@sentry/browser@7.55.0':
+  '@sentry/browser@7.55.2':
     dependencies:
-      '@sentry-internal/tracing': 7.55.0
-      '@sentry/core': 7.55.0
-      '@sentry/replay': 7.55.0
-      '@sentry/types': 7.55.0
-      '@sentry/utils': 7.55.0
+      '@sentry-internal/tracing': 7.55.2
+      '@sentry/core': 7.55.2
+      '@sentry/replay': 7.55.2
+      '@sentry/types': 7.55.2
+      '@sentry/utils': 7.55.2
       tslib: 1.14.1
 
   '@sentry/bundler-plugin-core@2.2.2':
@@ -6528,28 +6528,28 @@ snapshots:
       '@sentry/utils': 7.53.1
       tslib: 1.14.1
 
-  '@sentry/core@7.55.0':
+  '@sentry/core@7.55.2':
     dependencies:
-      '@sentry/types': 7.55.0
-      '@sentry/utils': 7.55.0
+      '@sentry/types': 7.55.2
+      '@sentry/utils': 7.55.2
       tslib: 1.14.1
 
-  '@sentry/integrations@7.55.0':
+  '@sentry/integrations@7.55.2':
     dependencies:
-      '@sentry/types': 7.55.0
-      '@sentry/utils': 7.55.0
+      '@sentry/types': 7.55.2
+      '@sentry/utils': 7.55.2
       localforage: 1.10.0
       tslib: 1.14.1
 
-  '@sentry/nextjs@7.55.0(next@13.4.5(@babel/core@7.21.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)(webpack@5.86.0(esbuild@0.17.11))':
+  '@sentry/nextjs@7.55.2(next@13.4.5(@babel/core@7.21.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)(webpack@5.86.0(esbuild@0.17.11))':
     dependencies:
       '@rollup/plugin-commonjs': 24.0.0(rollup@2.78.0)
-      '@sentry/core': 7.55.0
-      '@sentry/integrations': 7.55.0
-      '@sentry/node': 7.55.0
-      '@sentry/react': 7.55.0(react@18.2.0)
-      '@sentry/types': 7.55.0
-      '@sentry/utils': 7.55.0
+      '@sentry/core': 7.55.2
+      '@sentry/integrations': 7.55.2
+      '@sentry/node': 7.55.2
+      '@sentry/react': 7.55.2(react@18.2.0)
+      '@sentry/types': 7.55.2
+      '@sentry/utils': 7.55.2
       '@sentry/webpack-plugin': 1.20.0
       chalk: 3.0.0
       next: 13.4.5(@babel/core@7.21.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -6576,12 +6576,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sentry/node@7.55.0':
+  '@sentry/node@7.55.2':
     dependencies:
-      '@sentry-internal/tracing': 7.55.0
-      '@sentry/core': 7.55.0
-      '@sentry/types': 7.55.0
-      '@sentry/utils': 7.55.0
+      '@sentry-internal/tracing': 7.55.2
+      '@sentry/core': 7.55.2
+      '@sentry/types': 7.55.2
+      '@sentry/utils': 7.55.2
       cookie: 0.4.2
       https-proxy-agent: 5.0.1
       lru_map: 0.3.3
@@ -6589,33 +6589,33 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sentry/react@7.55.0(react@18.2.0)':
+  '@sentry/react@7.55.2(react@18.2.0)':
     dependencies:
-      '@sentry/browser': 7.55.0
-      '@sentry/types': 7.55.0
-      '@sentry/utils': 7.55.0
+      '@sentry/browser': 7.55.2
+      '@sentry/types': 7.55.2
+      '@sentry/utils': 7.55.2
       hoist-non-react-statics: 3.3.2
       react: 18.2.0
       tslib: 1.14.1
 
-  '@sentry/replay@7.55.0':
+  '@sentry/replay@7.55.2':
     dependencies:
-      '@sentry/core': 7.55.0
-      '@sentry/types': 7.55.0
-      '@sentry/utils': 7.55.0
+      '@sentry/core': 7.55.2
+      '@sentry/types': 7.55.2
+      '@sentry/utils': 7.55.2
 
   '@sentry/types@7.53.1': {}
 
-  '@sentry/types@7.55.0': {}
+  '@sentry/types@7.55.2': {}
 
   '@sentry/utils@7.53.1':
     dependencies:
       '@sentry/types': 7.53.1
       tslib: 1.14.1
 
-  '@sentry/utils@7.55.0':
+  '@sentry/utils@7.55.2':
     dependencies:
-      '@sentry/types': 7.55.0
+      '@sentry/types': 7.55.2
       tslib: 1.14.1
 
   '@sentry/webpack-plugin@1.20.0':
@@ -6660,21 +6660,21 @@ snapshots:
     dependencies:
       '@tanstack/query-core': 4.29.11
 
-  '@tanstack/react-query-devtools@4.29.12(@tanstack/react-query@4.29.12(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@tanstack/react-query-devtools@4.29.13(@tanstack/react-query@4.29.13(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@tanstack/match-sorter-utils': 8.8.4
-      '@tanstack/react-query': 4.29.12(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@tanstack/react-query': 4.29.13(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       superjson: 1.12.3
       use-sync-external-store: 1.2.0(react@18.2.0)
 
-  '@tanstack/react-query-persist-client@4.29.12(@tanstack/react-query@4.29.12(react-dom@18.2.0(react@18.2.0))(react@18.2.0))':
+  '@tanstack/react-query-persist-client@4.29.13(@tanstack/react-query@4.29.13(react-dom@18.2.0(react@18.2.0))(react@18.2.0))':
     dependencies:
       '@tanstack/query-persist-client-core': 4.29.11
-      '@tanstack/react-query': 4.29.12(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@tanstack/react-query': 4.29.13(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
 
-  '@tanstack/react-query@4.29.12(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@tanstack/react-query@4.29.13(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@tanstack/query-core': 4.29.11
       react: 18.2.0
@@ -6785,7 +6785,7 @@ snapshots:
 
   '@types/which@3.0.0': {}
 
-  '@typescript-eslint/eslint-plugin@7.11.0(@typescript-eslint/parser@7.15.0(eslint@8.42.0)(typescript@5.1.3))(eslint@8.42.0)(typescript@5.1.3)':
+  '@typescript-eslint/eslint-plugin@7.11.0(@typescript-eslint/parser@7.15.0(eslint@8.42.0)(typescript@5.1.3))(eslint@8.57.0)(typescript@5.1.3)':
     dependencies:
       '@eslint-community/regexpp': 4.11.0
       '@typescript-eslint/parser': 7.15.0(eslint@8.57.0)(typescript@5.1.3)
@@ -6793,7 +6793,7 @@ snapshots:
       '@typescript-eslint/type-utils': 7.11.0(eslint@8.57.0)(typescript@5.1.3)
       '@typescript-eslint/utils': 7.11.0(eslint@8.57.0)(typescript@5.1.3)
       '@typescript-eslint/visitor-keys': 7.11.0
-      eslint: 8.42.0
+      eslint: 8.57.0
       graphemer: 1.4.0
       ignore: 5.3.1
       natural-compare: 1.4.0
@@ -7859,12 +7859,12 @@ snapshots:
       semver: 6.3.0
       string.prototype.matchall: 4.0.8
 
-  eslint-plugin-unused-imports@4.0.0(@typescript-eslint/eslint-plugin@7.11.0(@typescript-eslint/parser@7.15.0(eslint@8.42.0)(typescript@5.1.3))(eslint@8.57.0)(typescript@5.1.3))(eslint@8.57.0):
+  eslint-plugin-unused-imports@4.0.0(@typescript-eslint/eslint-plugin@7.11.0(@typescript-eslint/parser@7.15.0(eslint@8.42.0)(typescript@5.1.3))(eslint@8.42.0)(typescript@5.1.3))(eslint@8.57.0):
     dependencies:
       eslint: 8.57.0
       eslint-rule-composer: 0.3.0
     optionalDependencies:
-      '@typescript-eslint/eslint-plugin': 7.11.0(@typescript-eslint/parser@7.15.0(eslint@8.42.0)(typescript@5.1.3))(eslint@8.42.0)(typescript@5.1.3)
+      '@typescript-eslint/eslint-plugin': 7.11.0(@typescript-eslint/parser@7.15.0(eslint@8.42.0)(typescript@5.1.3))(eslint@8.57.0)(typescript@5.1.3)
 
   eslint-rule-composer@0.3.0: {}
 
@@ -9721,7 +9721,7 @@ snapshots:
       postcss: 8.4.24
       postcss-selector-parser: 6.0.11
 
-  postcss-nesting@11.2.2(postcss@8.4.24):
+  postcss-nesting@11.3.0(postcss@8.4.24):
     dependencies:
       '@csstools/selector-specificity': 2.2.0(postcss-selector-parser@6.0.13)
       postcss: 8.4.24
@@ -9745,7 +9745,7 @@ snapshots:
       postcss: 8.4.24
       postcss-value-parser: 4.2.0
 
-  postcss-preset-env@8.4.2(postcss@8.4.24):
+  postcss-preset-env@8.5.0(postcss@8.4.24):
     dependencies:
       '@csstools/postcss-cascade-layers': 3.0.1(postcss@8.4.24)
       '@csstools/postcss-color-function': 2.2.3(postcss@8.4.24)
@@ -9764,7 +9764,7 @@ snapshots:
       '@csstools/postcss-normalize-display-values': 2.0.1(postcss@8.4.24)
       '@csstools/postcss-oklab-function': 2.2.3(postcss@8.4.24)
       '@csstools/postcss-progressive-custom-properties': 2.3.0(postcss@8.4.24)
-      '@csstools/postcss-relative-color-syntax': 1.0.1(postcss@8.4.24)
+      '@csstools/postcss-relative-color-syntax': 1.0.2(postcss@8.4.24)
       '@csstools/postcss-scope-pseudo-class': 2.0.2(postcss@8.4.24)
       '@csstools/postcss-stepped-value-functions': 2.1.1(postcss@8.4.24)
       '@csstools/postcss-text-decoration-shorthand': 2.2.4(postcss@8.4.24)
@@ -9795,7 +9795,7 @@ snapshots:
       postcss-initial: 4.0.1(postcss@8.4.24)
       postcss-lab-function: 5.2.3(postcss@8.4.24)
       postcss-logical: 6.2.0(postcss@8.4.24)
-      postcss-nesting: 11.2.2(postcss@8.4.24)
+      postcss-nesting: 11.3.0(postcss@8.4.24)
       postcss-opacity-percentage: 2.0.0(postcss@8.4.24)
       postcss-overflow-shorthand: 4.0.1(postcss@8.4.24)
       postcss-page-break: 3.0.4(postcss@8.4.24)
