@@ -35,7 +35,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-  ],
+, "src/components/widgets/xlog/XLogSummary.tsx"  ],
   "exclude": [
     "node_modules",
     "packages/markdown"
