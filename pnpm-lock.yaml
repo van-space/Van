@@ -80,6 +80,9 @@ importers:
       mdast-util-toc:
         specifier: 6.1.1
         version: 6.1.1
+      medium-zoom:
+        specifier: ^1.1.0
+        version: 1.1.0
       next:
         specifier: 13.4.5
         version: 13.4.5(@babel/core@7.21.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -2949,6 +2952,9 @@ packages:
 
   mdast-util-toc@6.1.1:
     resolution: {integrity: sha512-Er21728Kow8hehecK2GZtb7Ny3omcoPUVrmObiSUwmoRYVZaXLR751QROEFjR8W/vAQdHMLj49Lz20J55XaNpw==}
+
+  medium-zoom@1.1.0:
+    resolution: {integrity: sha512-ewyDsp7k4InCUp3jRmwHBRFGyjBimKps/AJLjRSox+2q/2H4p/PNpQf+pwONWlJiOudkBXtbdmVbFjqyybfTmQ==}
 
   merge-stream@2.0.0:
     resolution: {integrity: sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==}
@@ -7503,6 +7509,8 @@ snapshots:
       mdast-util-to-string: 3.2.0
       unist-util-is: 5.2.1
       unist-util-visit: 4.1.2
+
+  medium-zoom@1.1.0: {}
 
   merge-stream@2.0.0: {}
 
