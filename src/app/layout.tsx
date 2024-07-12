@@ -1,6 +1,7 @@
 import '../styles/index.css'
 
 import { dehydrate } from '@tanstack/react-query'
+import { Analytics } from '@vercel/analytics/react'
 import { ToastContainer } from 'react-toastify'
 
 import { ClerkProvider } from '@clerk/nextjs'
@@ -18,6 +19,7 @@ init()
 
 export const generateMetadata = defineMetadata(async (_, getData) => {
   const { seo, url, user } = await getData()
+
   return {
     metadataBase: new URL(url.webUrl),
     title: {
@@ -94,6 +96,7 @@ export default async function RootLayout(props: Props) {
           <ToastContainer />
         </body>
       </html>
+      <Analytics />
     </ClerkProvider>
   )
 }
