@@ -23,7 +23,7 @@ export function loadScript(url: string) {
       isLoadScriptMap[url] = 'loaded'
       resolve(null)
       if (loadingQueueMap[url]) {
-        loadingQueueMap[url].forEach(([resolve, reject]) => {
+        loadingQueueMap[url].forEach(([resolve]) => {
           resolve(null)
         })
         delete loadingQueueMap[url]
@@ -31,7 +31,7 @@ export function loadScript(url: string) {
     }
 
     if (isDev) {
-      console.log('load script: ', url)
+      console.info('load script: ', url)
     }
 
     script.onerror = function (e) {
@@ -39,7 +39,7 @@ export function loadScript(url: string) {
       // because even IE9 works not like others
       this.onerror = this.onload = null
       delete isLoadScriptMap[url]
-      loadingQueueMap[url].forEach(([resolve, reject]) => {
+      loadingQueueMap[url].forEach(([, reject]) => {
         reject(e)
       })
       delete loadingQueueMap[url]

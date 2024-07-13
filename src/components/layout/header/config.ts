@@ -8,12 +8,12 @@ import {
   FaSolidDotCircle,
   FaSolidFeatherAlt,
   FaSolidHistory,
-  FaSolidSubway,
   FaSolidUserFriends,
   IcTwotoneSignpost,
   IonBook,
   MdiFlask,
   MdiLightbulbOn20,
+  RMixPlanet,
 } from '~/components/icons/menu-collection'
 
 export interface IHeaderMenu {
@@ -21,7 +21,8 @@ export interface IHeaderMenu {
   path: string
   type?: string
   icon?: ReactNode
-  subMenu?: IHeaderMenu[]
+  subMenu?: Omit<IHeaderMenu, 'exclude'>[]
+  exclude?: string[]
 }
 export const headerMenuConfig: IHeaderMenu[] = [
   {
@@ -32,7 +33,7 @@ export const headerMenuConfig: IHeaderMenu[] = [
     subMenu: [],
   },
   {
-    title: '水文',
+    title: '文稿',
     path: '/posts',
     type: 'Post',
     subMenu: [],
@@ -43,20 +44,21 @@ export const headerMenuConfig: IHeaderMenu[] = [
     type: 'Note',
     path: '/notes',
     icon: h(FaSolidFeatherAlt),
+    exclude: ['/notes/topics'],
   },
 
   {
-    title: '速览',
+    title: '时光',
     icon: h(FaSolidHistory),
     path: '/timeline',
     subMenu: [
       {
-        title: '生活',
+        title: '手记',
         icon: h(FaSolidFeatherAlt),
         path: '/timeline?type=note',
       },
       {
-        title: '博文',
+        title: '文稿',
         icon: h(IonBook),
         path: '/timeline?type=post',
       },
@@ -64,6 +66,13 @@ export const headerMenuConfig: IHeaderMenu[] = [
         title: '回忆',
         icon: h(FaSolidCircle),
         path: '/timeline?memory=1',
+      },
+      {
+        title: '专栏',
+        path: '/notes/topics',
+        icon: h('i', {
+          className: 'icon-[mingcute--align-bottom-fill] flex center',
+        }),
       },
     ],
   },
@@ -74,7 +83,7 @@ export const headerMenuConfig: IHeaderMenu[] = [
   },
 
   {
-    title: '其他',
+    title: '更多',
     icon: h(FaSolidCircleNotch),
     path: '#',
     subMenu: [
@@ -93,11 +102,11 @@ export const headerMenuConfig: IHeaderMenu[] = [
         path: '/says',
         icon: h(FaSolidComments),
       },
+      {
+        title: '跃迁',
+        icon: h(RMixPlanet),
+        path: 'https://travel.moe/go.html',
+      },
     ],
-  },
-  {
-    title: '开往',
-    icon: h(FaSolidSubway),
-    path: 'https://travellings.link',
   },
 ]

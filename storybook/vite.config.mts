@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs'
 import path, { resolve } from 'node:path'
 import react from '@vitejs/plugin-react'
 import { parse } from 'dotenv'
+import Macros from 'unplugin-macros'
 import { defineConfig } from 'vite'
 import ViteRestart from 'vite-plugin-restart'
 import tsConfigPaths from 'vite-tsconfig-paths'
@@ -23,9 +24,8 @@ const options = {
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
+    Macros.vite(),
     react(),
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-
     tsConfigPaths(),
     mdx(options),
     ViteRestart({
@@ -37,13 +37,39 @@ export default defineConfig({
     __ROOT__: `"${__dirname}"`,
     __COMPONENT_ROOT__: `"${resolve(__dirname, '..')}"`,
     'process.env': { ...env },
+    __dirname: `"${__dirname}"`,
   },
+  base: '',
   resolve: {
     alias: {
       'next/image': resolve(__dirname, './mock-packages/next_image'),
       'next/link': resolve(__dirname, './mock-packages/next_link'),
       'next/dynamic': resolve(__dirname, './mock-packages/next_dynamic'),
+      'next/navigation': resolve(__dirname, './mock-packages/next_navigation'),
+      'next-runtime-env': resolve(
+        __dirname,
+        './mock-packages/next-runtime-env',
+      ),
       '~': resolve(__dirname, '../src'),
+    },
+  },
+
+  build: {
+    chunkSizeWarningLimit: 2500,
+    target: 'esnext',
+
+    // sourcemap: true,
+    rollupOptions: {
+      output: {
+        // chunkFileNames: `js/[name]-[hash].js`,
+        // entryFileNames: `js/[name]-[hash].js`,
+      },
+    },
+  },
+
+  optimizeDeps: {
+    esbuildOptions: {
+      plugins: [Macros.esbuild()],
     },
   },
 })

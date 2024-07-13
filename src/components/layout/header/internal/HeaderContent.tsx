@@ -4,6 +4,7 @@ import React, { memo } from 'react'
 import clsx from 'clsx'
 import {
   AnimatePresence,
+  LayoutGroup,
   m,
   useMotionTemplate,
   useMotionValue,
@@ -13,8 +14,9 @@ import { usePathname } from 'next/navigation'
 import type { IHeaderMenu } from '../config'
 
 import { RootPortal } from '~/components/ui/portal'
+import useDebounceValue from '~/hooks/common/use-debounce-value'
 import { clsxm } from '~/lib/helper'
-import { useScollIsUpAndPageIsOver } from '~/providers/root/page-scroll-info-provider'
+import { useIsScrollUpAndPageIsOver } from '~/providers/root/page-scroll-info-provider'
 
 import { useHeaderConfig } from './HeaderDataConfigureProvider'
 import { useHeaderHasMetaInfo, useMenuOpacity } from './hooks'
@@ -22,30 +24,32 @@ import { MenuPopover } from './MenuPopover'
 
 export const HeaderContent = () => {
   return (
-    <>
+    <LayoutGroup>
       <AnimatedMenu>
         <ForDesktop />
       </AnimatedMenu>
       <AccessibleMenu />
-    </>
+    </LayoutGroup>
   )
 }
 
 const AccessibleMenu: Component = () => {
   const hasMetaInfo = useHeaderHasMetaInfo()
 
-  const showShow = useScollIsUpAndPageIsOver(600) && hasMetaInfo
+  const showShow = useDebounceValue(
+    useIsScrollUpAndPageIsOver(600) && hasMetaInfo,
+    120,
+  )
   return (
     <RootPortal>
       <AnimatePresence>
         {showShow && (
           <m.div
             layout
-            layoutRoot
-            initial={{ y: -64 }}
+            initial={{ y: -20 }}
             animate={{ y: 0 }}
             exit={{ y: -20, opacity: 0 }}
-            className="fixed left-0 right-0 top-[6rem] z-10 flex justify-center duration-[100ms]"
+            className="pointer-events-none fixed inset-x-0 top-12 z-10 mr-[var(--removed-body-scroll-bar-size)] flex justify-center"
           >
             <ForDesktop />
           </m.div>
@@ -62,7 +66,7 @@ const AnimatedMenu: Component = ({ children }) => {
   const shouldHideNavBg = !hasMetaInfo && opacity === 0
   return (
     <m.div
-      className="duration-[100ms]"
+      className="duration-100"
       style={{
         opacity: hasMetaInfo ? opacity : 1,
         visibility: opacity === 0 && hasMetaInfo ? 'hidden' : 'visible',
@@ -78,6 +82,9 @@ const ForDesktop: Component<{
   shouldHideNavBg?: boolean
   animatedIcon?: boolean
 }> = ({ className, shouldHideNavBg, animatedIcon = true }) => {
+  const { config: headerMenuConfig } = useHeaderConfig()
+  const pathname = usePathname()
+
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
   const radius = useMotionValue(0)
@@ -91,9 +98,6 @@ const ForDesktop: Component<{
     [mouseX, mouseY, radius],
   )
 
-  const { config: headerMenuConfig } = useHeaderConfig()
-  const pathname = usePathname()
-
   const background = useMotionTemplate`radial-gradient(${radius}px circle at ${mouseX}px ${mouseY}px, var(--spotlight-color) 0%, transparent 65%)`
 
   return (
@@ -105,9 +109,9 @@ const ForDesktop: Component<{
         'rounded-full bg-gradient-to-b from-zinc-50/70 to-white/90',
         'shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur-md',
         'dark:from-zinc-900/70 dark:to-zinc-800/90 dark:ring-zinc-100/10',
-        'group [--spotlight-color:hsl(var(--a)_/_0.05)]',
-        'duration-200',
-        shouldHideNavBg && 'bg-none shadow-none ring-transparent',
+        'group [--spotlight-color:oklch(var(--a)_/_0.12)]',
+        'pointer-events-auto duration-200',
+        shouldHideNavBg && '!bg-none !shadow-none !ring-transparent',
         className,
       )}
     >
@@ -120,7 +124,10 @@ const ForDesktop: Component<{
       <div className="flex px-4 font-medium text-zinc-800 dark:text-zinc-200">
         {headerMenuConfig.map((section) => {
           const subItemActive =
-            section.subMenu?.findIndex((item) => item.path === pathname) || -1
+            section.subMenu?.findIndex((item) => {
+              return item.path === pathname || pathname.slice(1) === item.path
+            }) ?? -1
+
           return (
             <HeaderMenuItem
               iconLayout={animatedIcon}
@@ -129,7 +136,8 @@ const ForDesktop: Component<{
               subItemActive={section.subMenu?.[subItemActive]}
               isActive={
                 pathname === section.path ||
-                pathname.startsWith(`${section.path}/`) ||
+                (pathname.startsWith(`${section.path}/`) &&
+                  !section.exclude?.includes(pathname)) ||
                 subItemActive > -1 ||
                 false
               }
@@ -154,13 +162,13 @@ const HeaderMenuItem = memo<{
       <AnimatedItem
         href={href}
         isActive={isActive}
-        className={clsx('transition-[padding]')}
+        className="transition-[padding]"
       >
         <span className="relative flex items-center">
           {isActive && (
             <m.span
               layoutId={iconLayout ? 'header-menu-icon' : undefined}
-              className={clsxm('mr-2 flex items-center')}
+              className="mr-2 flex items-center"
             >
               {subItemActive?.icon ?? section.icon}
             </m.span>
@@ -184,16 +192,19 @@ function AnimatedItem({
   className?: string
   isActive?: boolean
 }) {
+  const isExternal = href.startsWith('http')
+  const As = isExternal ? 'a' : Link
   return (
     <div>
-      <Link
+      <As
         href={href}
         className={clsxm(
           'relative block whitespace-nowrap px-4 py-2 transition',
-          isActive ? 'text-accent' : 'hover:text-accent-focus',
+          isActive ? 'text-accent' : 'hover:text-accent/80',
           isActive ? 'active' : '',
           className,
         )}
+        target={isExternal ? '_blank' : undefined}
       >
         {children}
         {isActive && (
@@ -205,7 +216,7 @@ function AnimatedItem({
             layoutId="active-nav-item"
           />
         )}
-      </Link>
+      </As>
     </div>
   )
 }

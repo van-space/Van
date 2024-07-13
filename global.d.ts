@@ -11,12 +11,12 @@ declare global {
     } & Props
   >
 
-  export type Component<P = {}> = FC<
-    {
-      className?: string
-    } & P &
-      PropsWithChildren
-  >
+  export type Component<P = {}> = FC<ComponentType & P>
+
+  export type ComponentType<P = {}> = {
+    className?: string
+  } & PropsWithChildren &
+    P
 
   // TODO should remove in next TypeScript version
   interface Document {
@@ -34,6 +34,7 @@ declare global {
 declare module 'react' {
   export interface AriaAttributes {
     'data-hide-print'?: boolean
+    'data-event'?: string
     'data-testid'?: string
   }
 }

@@ -1,39 +1,111 @@
 # Shiro
 
-A minimalist personal website embodying the purity of paper and freshness of snow.
+一个极简主义的个人网站，纸的纯净和雪的清新。
 
-A theme for [Mix Space](https://github.com/mx-space)
+为 [Mix Space](https://github.com/mx-space) 服务的个人站点前端。
 
-## 动机
+以下是一些使用 Shiro 的示例站点：
 
-Kami 的代码已经超过 3 年，实在变得难以维护，一堆屎一样的代码。自己看了都感到恶心。其次是太多的 Hydration Error 看着心烦，换个风格也挺好。
+- [静かな森](https://innei.in)
+- [可愛い松](https://blog.wibus.ren/)
+- [天翔 TNXG](https://tnxg.top)
+- [启动台の博客](https://www.launchpadx.top/)
 
-本次重写不仅在风格上的不同，在代码层面上也更加符合 React 哲学，使用了非常牛逼的 Jotai 作为状态管理，🍞老师果然说的没错，Jotai yyds。
+欢迎你来体验 Shiro 的魅力！
 
-几乎重写了 80% 的原代码，覆盖了几个主要页面。
+## :sparkles: 特征
 
-## Status
+1. :rocket: **SEO 100%，性能优秀**：在 LightHouse 中表现优秀，Performance > 90%，Best practice > 90%。
+2. :art: **UI 现代化，简洁不简单**：用户界面设计现代化，简洁而不简单，让你的体验更加流畅。
+3. :gem: **注重细节，UX 极致**：注重每一个细节，所有的动画都使用符合物理的 Spring 弹性动画，每一帧都是大自然的感觉。
+4. :bell: **接入 WebSocket，实时获取最新的文章通知**：通过 WebSocket，访客能够实时获取最新的文章通知。
+5. :computer: **实时活动状态展示**：配合 [ProcessReporter](https://github.com/mx-space/ProcessReporterMac)，可以在主页上显示实时活动状态。
+6. :pencil: **Markdown 的扩展语法**：支持更多的 Markdown 扩展语法，等待你的发掘和使用。
+7. :zap: **轻量级管理面板**：可以在管理面板中管理文章、评论等。
 
-**WIP**
+## :wrench: 技术栈
 
-## 设计细节
+- NextJS (App Router)
+- Jotai
+- Framer motion
+- Radix UI
+- Socket.IO
+- TailwindCSS
 
-### 本站依旧接入了 WebSocket 连接，通知和更新当前的活动。
+## 📄 使用文档
 
-- 发布文章站内通知
-- 文章的实时修改，实时反映
-- 实时评论 WIP
+前往：https://mx-space.js.org/themes/shiro
 
-### 头部
+感谢 @wibus-wee 和 @wuhang2003 等其他社区贡献者编写。
 
-- 4 种不同的状态
+## :camera: 截图
 
-### FAB
+<img width="1471" alt="Live Demo" src="https://github.com/Innei/Shiro/assets/41265413/bf8af4ec-0f0c-441a-8c06-4b44e1649597">
 
-对移动端进行了优化，调整了尺寸为了更好的点击。
+轻管理面板：
 
-## License
+![](https://github.com/Innei/Shiro/assets/41265413/4bb5b34a-3ce2-45da-bec7-4596ac87f849)
+![](https://github.com/Innei/Shiro/assets/41265413/592941d0-2ebe-4d64-bd77-3171829bd896)
 
-2023 © Innei, Released under the MIT License. Thanks GPT-4 & [cali.so](https://github.com/CaliCastle/cali.so)
+<details>
+<summary>
+点击查看部分完整页面截图
+</summary>
 
-> [Personal Website](https://innei.in/) · GitHub [@Innei](https://github.com/innei/)
+![页面截图 1](https://github.com/Innei/Shiro/assets/41265413/1b85c9be-0cd3-46b5-a089-a9ab97fdfecb)
+![页面截图 2](https://github.com/Innei/Shiro/assets/41265413/d808d288-c022-42f2-8d74-ad057a588771)
+
+</details>
+
+## :zap: 性能
+
+在 M2 Macbook Air 环境中对逻辑最重的页面进行了测试。
+
+![](https://github.com/Innei/Shiro/assets/41265413/f76152af-4a52-46a2-9b83-20567800ba75)
+
+## :rocket: 部署
+
+[看这里](https://mx-space.js.org/themes/shiro).
+
+## :whale: 运行
+
+### :hammer: 通过预构建运行
+
+首先在 `https://github.com/Innei/Shiro/releases` 中下载预构建好的 `release.zip`。然后解压它。
+
+```sh
+cd standalone
+vim .env # 修改你的 ENV 变量
+export PORT=2323
+node server.js
+```
+
+### :books: 推荐使用 Docker Compose
+
+```sh
+mkdir shiro
+cd shiro
+wget https://raw.githubusercontent.com/Innei/Shiro/main/docker-compose.yml
+wget https://raw.githubusercontent.com/Innei/Shiro/main/.env.template .env
+
+vim .env # 修改你的 ENV 变量
+docker compose up -d
+
+docker compose pull # 后续更新镜像
+```
+
+## Markdown 扩展语法
+
+请阅读 https://shiro.innei.in/#/markdown
+
+## :heart: 鸣谢 & 许可
+
+2024 © Innei，本软件遵循 AGPLv3 许可证，附加特定的商业使用条件。此外，使用本项目还需要遵循[附加条款和条件](ADDITIONAL_TERMS.md)。
+
+部分代码参考自 GPT-4 和 [cali.so](https://github.com/CaliCastle/cali.so)。
+
+感谢 Mix Space Team 和广大社区朋友们的贡献。
+
+[赞助版](https://github.com/sponsors/Innei)：[白い](https://github.com/innei-dev/Shiroi)
+
+> [个人网站](https://innei.in/) · GitHub [@Innei](https://github.com/innei/)

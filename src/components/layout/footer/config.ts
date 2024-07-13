@@ -1,13 +1,4 @@
-interface LinkSection {
-  name: string
-  links: {
-    name: string
-    href: string
-    external?: boolean
-  }[]
-}
-
-export const linkSections: LinkSection[] = [
+export const defaultLinkSections: LinkSection[] = [
   {
     name: '关于',
     links: [
@@ -53,7 +44,7 @@ export const linkSections: LinkSection[] = [
       },
       {
         name: '发邮件',
-        href: 'mailto:i@innei.ren',
+        href: 'mailto:i@innei.in',
         external: true,
       },
       {
@@ -64,3 +55,8 @@ export const linkSections: LinkSection[] = [
     ],
   },
 ]
+
+export interface FooterConfig {
+  linkSections: LinkSection[]
+  otherInfo: OtherInfo
+}

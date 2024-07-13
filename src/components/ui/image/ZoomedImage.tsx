@@ -1,17 +1,35 @@
 'use client'
 
-import { isServer } from '@tanstack/react-query'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  cloneElement,
+  forwardRef,
+  memo,
+  useCallback,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
+import clsx from 'clsx'
+import { useIsomorphicLayoutEffect } from 'foxact/use-isomorphic-layout-effect'
 import mediumZoom from 'medium-zoom'
+import Image from 'next/image'
 import { tv } from 'tailwind-variants'
 import type { Zoom } from 'medium-zoom'
-import type { FC, ReactNode } from 'react'
+import type {
+  AnimationEventHandler,
+  DetailedHTMLProps,
+  FC,
+  ImgHTMLAttributes,
+  ReactNode,
+} from 'react'
 
+import { useIsMobile } from '~/atoms/hooks'
 import { LazyLoad } from '~/components/common/Lazyload'
 import { useIsUnMounted } from '~/hooks/common/use-is-unmounted'
-import { calculateDimensions } from '~/lib/calc-image'
-import { isDev } from '~/lib/env'
+import { isDev, isServerSide } from '~/lib/env'
 import { clsxm } from '~/lib/helper'
+import { calculateDimensions } from '~/lib/image'
 import { useMarkdownImageRecord } from '~/providers/article/MarkdownImageRecordProvider'
 
 import { Divider } from '../divider'
@@ -27,6 +45,9 @@ type TImageProps = {
 type BaseImageProps = {
   zoom?: boolean
   placeholder?: ReactNode
+
+  height?: number
+  width?: number
 }
 
 export enum ImageLoadStatus {
@@ -55,15 +76,17 @@ export const ImageLazy: Component<TImageProps & BaseImageProps> = ({
   zoom,
 
   placeholder,
+  height,
+  width,
+  className,
 }) => {
-  // @ts-ignore
   const [zoomer_] = useState(() => {
-    if (isServer) return null
+    if (isServerSide) return null!
     if (zoomer) return zoomer
-    const zoom = mediumZoom(undefined)
+    const zoom = mediumZoom(undefined, {})
     zoomer = zoom
     return zoom
-  }) as [Zoom]
+  })
 
   const figcaption = title || alt
   const [imageLoadStatus, setImageLoadStatus] = useState(
@@ -79,7 +102,8 @@ export const ImageLazy: Component<TImageProps & BaseImageProps> = ({
     [isUnmount],
   )
   const imageRef = useRef<HTMLImageElement>(null)
-  useEffect(() => {
+  const isMobile = useIsMobile()
+  useIsomorphicLayoutEffect(() => {
     if (imageLoadStatus !== ImageLoadStatus.Loaded) {
       return
     }
@@ -88,6 +112,18 @@ export const ImageLazy: Component<TImageProps & BaseImageProps> = ({
     }
     const $image = imageRef.current
 
+    if (!$image) return
+    if (isMobile) {
+      $image.onclick = () => {
+        // NOTE: document 上的 click 可以用 stopImmediatePropagation 阻止
+        // e.stopImmediatePropagation()
+        window.open(src)
+      }
+      return () => {
+        $image.onclick = null
+      }
+    }
+
     if ($image) {
       zoomer_.attach($image)
 
@@ -95,55 +131,78 @@ export const ImageLazy: Component<TImageProps & BaseImageProps> = ({
         zoomer_.detach($image)
       }
     }
-  }, [zoom, zoomer_, imageLoadStatus])
+  }, [zoom, zoomer_, imageLoadStatus, isMobile])
 
+  const handleOnLoad = useCallback(() => {
+    setImageLoadStatusSafe(ImageLoadStatus.Loaded)
+  }, [setImageLoadStatusSafe])
+  const handleError = useCallback(
+    () => setImageLoadStatusSafe(ImageLoadStatus.Error),
+    [setImageLoadStatusSafe],
+  )
+  const handleOnAnimationEnd: AnimationEventHandler<HTMLImageElement> =
+    useCallback((e) => {
+      if (ImageLoadStatus.Loaded) {
+        ;(e.target as HTMLElement).classList.remove(
+          imageStyles[ImageLoadStatus.Loaded],
+        )
+      }
+    }, [])
+  const imageClassName = useMemo(
+    () =>
+      styles({
+        status: imageLoadStatus,
+        className: clsx(imageStyles[ImageLoadStatus.Loaded], className),
+      }),
+    [className, imageLoadStatus],
+  )
   return (
-    <LazyLoad placeholder={placeholder} offset={30}>
-      <figure>
-        <span className="relative flex justify-center">
+    <figure>
+      <span className="relative flex justify-center" data-hide-print>
+        <LazyLoad placeholder={placeholder} offset={30}>
           <span>
             {imageLoadStatus !== ImageLoadStatus.Loaded && placeholder}
           </span>
+          {/* <div className="absolute top-0 opacity-30">{placeholder}</div> */}
+          {imageLoadStatus === ImageLoadStatus.Error && (
+            <div className="absolute inset-0 z-[1] flex flex-col gap-8 center">
+              <i className="icon-[mingcute--close-line] text-4xl text-red-500" />
+              <span>图片加载失败</span>
 
-          <img
+              <Divider className="w-[80px] opacity-80" />
+              <a href={src} target="_blank" rel="noreferrer">
+                <span>查看原图</span>
+              </a>
+            </div>
+          )}
+          <OptimizedImage
+            height={height}
+            width={width}
             src={src}
             title={title}
-            alt={alt}
+            alt={alt || title || ''}
             ref={imageRef}
-            onLoad={() => {
-              setImageLoadStatusSafe(ImageLoadStatus.Loaded)
-            }}
-            onError={() => setImageLoadStatusSafe(ImageLoadStatus.Error)}
-            className={styles({
-              status: imageLoadStatus,
-              className: imageStyles[ImageLoadStatus.Loaded],
-            })}
-            onAnimationEnd={(e) => {
-              if (ImageLoadStatus.Loaded) {
-                ;(e.target as HTMLElement).classList.remove(
-                  imageStyles[ImageLoadStatus.Loaded],
-                )
-              }
-            }}
+            onLoad={handleOnLoad}
+            onError={handleError}
+            className={imageClassName}
+            onAnimationEnd={handleOnAnimationEnd}
           />
-        </span>
+        </LazyLoad>
+      </span>
 
-        {!!figcaption && (
-          <figcaption className="mt-1 flex flex-col items-center justify-center">
-            <Divider className="w-[80px] opacity-80" />
-            <span>{figcaption}</span>
-          </figcaption>
-        )}
-      </figure>
-    </LazyLoad>
-  )
-}
+      <img
+        className="max-w-1/3 !hidden print:!block"
+        src={src}
+        alt={alt || title}
+      />
 
-export const ZoomedImage: Component<TImageProps> = (props) => {
-  return (
-    <span className="block text-center">
-      <ImageLazy {...props} zoom />
-    </span>
+      {!!figcaption && (
+        <figcaption className="mt-1 flex flex-col items-center justify-center">
+          <Divider className="w-[80px] opacity-80" />
+          <span>{figcaption}</span>
+        </figcaption>
+      )}
+    </figure>
   )
 }
 
@@ -155,15 +214,25 @@ interface FixedImageProps extends TImageProps {
 }
 export const FixedZoomedImage: Component<FixedImageProps> = (props) => {
   const placeholder = useMemo(() => {
-    return <Placeholder containerWidth={props.containerWidth} src={props.src} />
-  }, [props.containerWidth, props.src])
+    return <Placeholder {...props} />
+  }, [props])
   return <ImageLazy zoom placeholder={placeholder} {...props} />
 }
 
 const Placeholder: FC<
-  Pick<FixedImageProps, 'src' | 'containerWidth' | 'height' | 'width'>
-> = ({ src, containerWidth, height: manualHeight, width: manualWidth }) => {
+  Pick<
+    FixedImageProps,
+    'src' | 'containerWidth' | 'height' | 'width' | 'accent'
+  >
+> = ({
+  src,
+  containerWidth,
+  height: manualHeight,
+  width: manualWidth,
+  accent,
+}) => {
   const imageMeta = useMarkdownImageRecord(src)
+  const accentColor = accent || imageMeta?.accent
 
   const scaledSize = useMemo(() => {
     let nextHeight = manualHeight
@@ -193,7 +262,7 @@ const Placeholder: FC<
     }
   }, [manualHeight, manualWidth, containerWidth, imageMeta])
 
-  if (!scaledSize) return <NoFixedPlaceholder accent={imageMeta?.accent} />
+  if (!scaledSize) return <NoFixedPlaceholder accent={accentColor} />
 
   return (
     <span
@@ -206,7 +275,7 @@ const Placeholder: FC<
       style={{
         height: scaledSize.scaleHeight,
         width: scaledSize.scaleWidth,
-        backgroundColor: imageMeta?.accent,
+        backgroundColor: accentColor,
       }}
     />
   )
@@ -227,3 +296,65 @@ const NoFixedPlaceholder = ({ accent }: { accent?: string }) => {
     />
   )
 }
+
+const OptimizedImage = memo(
+  forwardRef<
+    HTMLImageElement,
+    DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>
+  >(({ src, alt, ...rest }, ref) => {
+    const { height, width } = useMarkdownImageRecord(src!) || rest
+
+    const isGif = src!.endsWith('.gif')
+    const useOptimize = !!(height && width) && !isGif
+
+    const placeholderImageRef = useRef<HTMLImageElement>(null)
+    const ImageEl = (
+      <img
+        data-zoom-src={src}
+        alt={alt}
+        src={src}
+        ref={placeholderImageRef}
+        {...rest}
+      />
+    )
+
+    useImperativeHandle(ref, () => placeholderImageRef.current!)
+
+    const optimizedImageRef = useRef<HTMLImageElement>(null)
+
+    useIsomorphicLayoutEffect(() => {
+      const $renderImage = optimizedImageRef.current
+      if (!$renderImage) return
+      if (!placeholderImageRef.current) return
+      placeholderImageRef.current.src = $renderImage.src
+    }, [src])
+
+    return (
+      <>
+        {useOptimize ? (
+          <>
+            <Image
+              alt={alt || ''}
+              fetchPriority="high"
+              priority
+              src={src!}
+              {...rest}
+              height={+height}
+              width={+width}
+              ref={optimizedImageRef}
+            />
+            <div className="absolute inset-0 flex justify-center opacity-0">
+              {cloneElement(ImageEl, {
+                src: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', // blank src
+              })}
+            </div>
+          </>
+        ) : (
+          ImageEl
+        )}
+      </>
+    )
+  }),
+)
+
+OptimizedImage.displayName = 'OptimizedImage'

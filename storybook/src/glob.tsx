@@ -2,14 +2,11 @@ import React, { createElement, Fragment } from 'react'
 import type { FC, ReactNode } from 'react'
 import type { DocumentComponent, DocumentPageMeta } from '../typings'
 
-import { Markdown } from './components/Mardown'
+import { GLOB_PATH } from '../config' assert { type: 'macro' }
+import { Markdown } from './components/Markdown'
 
 // TODO find project root
-const modulesPath2PromiseMapping = import.meta.glob(
-  '../../src/components/ui/*/index.demo.(tsx|mdx)',
-
-  {},
-)
+const modulesPath2PromiseMapping = import.meta.glob(GLOB_PATH)
 
 // const mdxPath2PromiseMapping = import.meta.glob('../../*/index.demo.mdx', {
 //   as: 'raw',
@@ -64,8 +61,8 @@ export const laziedComponents: FC<any>[] = Object.values(
 
         const { meta = {} } = DocumentComponent
         const { description, title } = meta
-        components.push(
-          <section className="space-y-4">
+        components.unshift(
+          <section className="mt-8 space-y-4">
             <h2 className="text-lg font-medium">{title || key}</h2>
             {!!description && <Markdown value={description} />}
             <DocumentComponent />

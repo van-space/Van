@@ -1,8 +1,9 @@
 import { createElement } from 'react'
 import { toast as Toast } from 'react-toastify'
+import type { JSX } from 'react'
 import type { Id, ToastOptions, TypeOptions } from 'react-toastify'
 
-import { ToastCard } from '~/components/widgets/shared/ToastCard'
+import { ToastCard } from '~/components/modules/shared/ToastCard'
 
 const baseConfig = {
   position: 'bottom-right',
@@ -14,6 +15,10 @@ const baseConfig = {
   closeButton: false,
 } satisfies ToastOptions
 
+interface CustomToastOptions {
+  iconElement?: JSX.Element
+  onClick?: () => void
+}
 interface ToastCustom {
   (
     message: string,
@@ -22,25 +27,22 @@ interface ToastCustom {
       iconElement?: JSX.Element
     },
   ): Id
-}
+  success(message: string, options?: ToastOptions & CustomToastOptions): Id
+  info(message: string, options?: ToastOptions & CustomToastOptions): Id
+  warn(message: string, options?: ToastOptions & CustomToastOptions): Id
+  error(message: string, options?: ToastOptions & CustomToastOptions): Id
 
-interface ToastCustom {
-  success(message: string, options?: ToastOptions): Id
-  info(message: string, options?: ToastOptions): Id
-  warn(message: string, options?: ToastOptions): Id
-  error(message: string, options?: ToastOptions): Id
+  dismiss(id: Id): void
 }
 
 // @ts-ignore
 export const toast: ToastCustom = (
   message: string,
   type?: TypeOptions,
-  options?: ToastOptions & {
-    iconElement?: JSX.Element
-  },
+  options?: ToastOptions & CustomToastOptions,
 ) => {
-  const { iconElement, ...rest } = options || {}
-  return Toast(createElement(ToastCard, { message, iconElement }), {
+  const { iconElement, onClick, ...rest } = options || {}
+  return Toast(createElement(ToastCard, { message, iconElement, onClick }), {
     type,
     ...baseConfig,
     ...rest,
@@ -48,6 +50,12 @@ export const toast: ToastCustom = (
 }
 ;['success', 'info', 'warn', 'error'].forEach((type) => {
   // @ts-ignore
-  toast[type] = (message: string, options?: ToastOptions) =>
-    toast(message, type as TypeOptions, options)
+  toast[type] = (
+    message: string,
+    options?: ToastOptions & CustomToastOptions,
+  ) => toast(message, type as TypeOptions, options)
+})
+
+Object.assign(toast, {
+  dismiss: Toast.dismiss,
 })

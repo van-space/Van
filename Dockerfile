@@ -1,61 +1,64 @@
-# Rebuild the source code only when needed
-FROM node:18-alpine AS builder
+FROM node:18-alpine AS base
 
-RUN apk add --no-cache libc6-compat git
-RUN npm i -g pnpm
+RUN npm install -g --arch=x64 --platform=linux sharp
+
+FROM base AS deps
+
+RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache python3 make g++
+
 WORKDIR /app
+
 COPY . .
 
+
+RUN npm install -g pnpm
 RUN pnpm install
-RUN npm run build
 
-# If using npm comment out above and use below instead
-# RUN npm run build
+FROM base AS builder
 
-# Production image, copy all the files and run next
-FROM node:18-alpine AS runner
+RUN apk update && apk add --no-cache git
+
+
 WORKDIR /app
+COPY --from=deps /app/ .
+RUN npm install -g pnpm
 
 ENV NODE_ENV production
 ARG BASE_URL
+ARG NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+ARG CLERK_SECRET_KEY
+ARG S3_ACCESS_KEY
+ARG S3_SECRET_KEY
+ARG WEBHOOK_SECRET
+ARG TMDB_API_KEY
+ARG GH_TOKEN
 ENV BASE_URL=${BASE_URL}
 ENV NEXT_PUBLIC_API_URL=${BASE_URL}/api/v2
 ENV NEXT_PUBLIC_GATEWAY_URL=${BASE_URL}
-ENV NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-ENV NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-ENV NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
-ENV NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
+ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+ENV CLERK_SECRET_KEY=${CLERK_SECRET_KEY}
+ENV S3_ACCESS_KEY=${S3_ACCESS_KEY}
+ENV S3_SECRET_KEY=${S3_SECRET_KEY}
+ENV TMDB_API_KEY=${TMDB_API_KEY}
+ENV WEBHOOK_SECRET=${WEBHOOK_SECRET}
+ENV GH_TOKEN=${GH_TOKEN}
 
+RUN pnpm build
 
-ENV SENTRY=false
-ENV NEXT_PUBLIC_SENTRY_DSN
-ENV SENTRY_AUTH_TOKEN
+FROM base AS runner
+WORKDIR /app
 
-ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-ENV CLERK_SECRET_KEY
+ENV NODE_ENV production
 
-
-# RUN node -e "console.log(process.env)"
-# Uncomment the following line in case you want to disable telemetry during runtime.
-# ENV NEXT_TELEMETRY_DISABLED 1
-
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-# You only need to copy next.config.mjs if you are NOT using the default configuration
-COPY --from=builder /app/next.config.mjs ./
+# and other docker env inject
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/package.json ./package.json
-
-# Automatically leverage output traces to reduce image size 
-# https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-USER nextjs
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/.next/server ./.next/server
 
 EXPOSE 2323
 
 ENV PORT 2323
-
-CMD echo "Shiro" && node server.js
+ENV NEXT_SHARP_PATH=/usr/local/lib/node_modules/sharp
+CMD echo "Mix Space Web [Shiro] Image." && node server.js;

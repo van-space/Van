@@ -14,20 +14,16 @@ defaults:
     # change this if your nextjs app does not live at the root of the repo
     working-directory: ./
 
-env:
-  VERCEL_ORG_ID: wqUeSmfmBfQzj0I1OehLu2H9
-  VERCEL_PROJECT_ID: prj_IUZGepAtVeh4GrzmFtp0BceSTCvX
-
 jobs:
   analyze:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
       # If pnpm is used, you need to switch the previous step with the following one. pnpm does not create a package-lock.json
       # so the step above will fail to pull dependencies
@@ -38,13 +34,8 @@ jobs:
           version: 8
           run_install: true
 
-      - name: Install Vercel CLI
-        run: npm install --global vercel@latest
-      - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
-
       - name: Restore next build
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: restore-build-cache
         env:
           cache-name: cache-next-build
@@ -65,13 +56,13 @@ jobs:
         run: npx -p nextjs-bundle-analysis report
 
       - name: Upload bundle
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: bundle
           path: .next/analyze/__bundle_analysis.json
 
       - name: Download base branch bundle stats
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@v6
         if: success() && github.event.number
         with:
           workflow: nextjs_bundle_analysis.yml
@@ -84,7 +75,7 @@ jobs:
 
       - name: Upload analysis
         if: success() && github.event.number
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: analysis_comment
           path: .next/analyze/__bundle_analysis_comment.txt
@@ -95,7 +86,7 @@ jobs:
 
       - name: Upload PR number
         if: ${{ always() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: pr
           path: ./pr-id.txt

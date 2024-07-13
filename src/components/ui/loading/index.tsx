@@ -19,10 +19,7 @@ export const Loading: Component<LoadingProps> = ({
   return (
     <div
       data-hide-print
-      className={clsxm(
-        'my-20 flex flex-col items-center justify-start',
-        className,
-      )}
+      className={clsxm('my-20 flex flex-col center', className)}
     >
       <span className="loading loading-ball loading-lg" />
       {!!nextLoadingText && (
@@ -31,3 +28,7 @@ export const Loading: Component<LoadingProps> = ({
     </div>
   )
 }
+
+export const FullPageLoading = () => (
+  <Loading useDefaultLoadingText className="h-[calc(100vh-6.5rem-10rem)]" />
+)

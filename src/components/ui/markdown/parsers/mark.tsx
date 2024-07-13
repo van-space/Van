@@ -1,10 +1,10 @@
-import type { MarkdownToJSX } from 'markdown-to-jsx'
+import React from 'react'
 import {
-  Priority,
   parseCaptureInline,
+  Priority,
   simpleInlineRegex,
 } from 'markdown-to-jsx'
-import React from 'react'
+import type { MarkdownToJSX } from 'markdown-to-jsx'
 
 //  ==Mark==
 export const MarkRule: MarkdownToJSX.Rule = {
@@ -13,11 +13,8 @@ export const MarkRule: MarkdownToJSX.Rule = {
   parse: parseCaptureInline,
   react(node, output, state?) {
     return (
-      <mark
-        key={state?.key}
-        className="!bg-always-yellow-200 !rounded-lg !bg-opacity-80 !bg-none !text-black"
-      >
-        {output(node.content, state!)}
+      <mark key={state?.key} className="rounded-md">
+        <span className="px-1">{output(node.content, state!)}</span>
       </mark>
     )
   },

@@ -1,11 +1,12 @@
 import daisyui from 'daisyui'
 import { withTV } from 'tailwind-variants/transformer'
-import twColors from 'tailwindcss/colors'
 import type { Config } from 'tailwindcss'
-import type { PluginAPI } from 'tailwindcss/types/config'
+import type { CSSRuleObject, PluginAPI } from 'tailwindcss/types/config'
 
 import { addDynamicIconSelectors } from '@iconify/tailwind'
 import typography from '@tailwindcss/typography'
+
+require('./cssAsPlugin')
 
 const UIKitColors = {
   red: {
@@ -169,15 +170,37 @@ const UIKitColors = {
 const twConfig: Config = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   darkMode: ['class', '[data-theme="dark"]'],
-  theme: {
-    // colors: createVariableColors(twColors),
+  safelist: [
+    'font-light',
+    'text-3xl',
+    'rounded',
+    'p-1',
+    'bg-gray-200',
+    'dark:bg-gray-800/0',
+    'hover:dark:bg-gray-800/100',
+    'bg-opacity-0',
+    'hover:bg-opacity-100',
+    'transition-background',
 
+    'w-[1px]',
+    'h-8',
+    '-bottom-2',
+    'bg-gray-800/80',
+    'dark:bg-gray-200/80',
+    'group-hover:opacity-100',
+    'transition-opacity',
+    'group-hover:animation-blink',
+
+    '!w-full',
+    'w-full',
+  ],
+  theme: {
     extend: {
       fontFamily: {
         sans: 'var(--font-sans),system-ui,-apple-system,PingFang SC,"Microsoft YaHei",Segoe UI,Roboto,Helvetica,noto sans sc,hiragino sans gb,"sans-serif",Apple Color Emoji,Segoe UI Emoji,Not Color Emoji',
         serif:
           '"Noto Serif CJK SC","Noto Serif SC",var(--font-serif),"Source Han Serif SC","Source Han Serif",source-han-serif-sc,SongTi SC,SimSum,"Hiragino Sans GB",system-ui,-apple-system,Segoe UI,Roboto,Helvetica,"Microsoft YaHei","WenQuanYi Micro Hei",sans-serif',
-        mono: `"OperatorMonoSSmLig Nerd Font","Cascadia Code PL","FantasqueSansMono Nerd Font","operator mono","Fira code Retina","Fira code","Consolas", Monaco, "Hannotate SC", monospace, -apple-system`,
+        mono: `"OperatorMonoSSmLig Nerd Font","Cascadia Code PL","FantasqueSansMono Nerd Font","operator mono",JetBrainsMono,"Fira code Retina","Fira code","Consolas", Monaco, "Hannotate SC", monospace, -apple-system`,
       },
       screens: {
         'light-mode': { raw: '(prefers-color-scheme: light)' },
@@ -201,7 +224,6 @@ const twConfig: Config = {
 
       colors: {
         uk: UIKitColors,
-        always: { ...twColors },
 
         themed: {
           bg_opacity: 'var(--bg-opacity)',
@@ -211,6 +233,7 @@ const twConfig: Config = {
   },
 
   daisyui: {
+    logs: false,
     themes: [
       {
         light: {
@@ -226,6 +249,7 @@ const twConfig: Config = {
 
           neutral: UIKitColors.grey3.light,
 
+          'base-100': UIKitColors.background.primary.light,
           'base-content': UIKitColors.label.primary.light,
 
           info: UIKitColors.blue.light,
@@ -270,16 +294,20 @@ const twConfig: Config = {
     addDynamicIconSelectors(),
     addShortcutPlugin,
 
-    daisyui,
     typography,
+    daisyui,
+
     require('tailwind-scrollbar'),
-    // variableColorsPlugin(twColors),
-    // ColorPlugin,
+    require('@tailwindcss/container-queries'),
+    require('tailwindcss-animated'),
+
+    require('./src/styles/theme.css'),
+    require('./src/styles/layer.css'),
   ],
 }
 
 function addShortcutPlugin({ addUtilities }: PluginAPI) {
-  const styles = {
+  const styles: CSSRuleObject = {
     '.content-auto': {
       'content-visibility': 'auto',
     },
@@ -300,38 +328,14 @@ function addShortcutPlugin({ addUtilities }: PluginAPI) {
     '.fill-content': {
       'min-height': `calc(100vh - 17.5rem)`,
     },
+    '.card-shadow': {
+      'box-shadow': '0 0 0 1px rgba(0,0,0,.08),0 4px 6px rgba(0,0,0,.04)',
+    },
+    '.card-shadow:hover': {
+      'box-shadow': '0 0 0 1px rgba(0,0,0,.08),0 6px 14px rgba(0,0,0,.08)',
+    },
   }
   addUtilities(styles)
 }
 
 export default withTV(twConfig)
-
-// function ColorPlugin({ addUtilities, e, theme, addVariant }: PluginAPI) {
-//   const newUtilities = {}
-//   const colors = theme('colors.uk')
-
-//   Object.keys(colors).forEach((colorName) => {
-//     const colorGroup = colors[colorName]
-//     if (typeof colorGroup === 'object') {
-//       Object.keys(colorGroup).forEach((shadeName) => {
-//         const colorValue = colorGroup[shadeName]
-//         for (let i = 1; i <= 10; i++) {
-//           const color = Color(colorValue)
-//             .lighten(i * 0.1)
-//             .hex()
-//           newUtilities[`.text-${colorName}-${shadeName}-${i * 100}`] = {
-//             color,
-//           }
-//           newUtilities[`.bg-${colorName}-${shadeName}-${i * 100}`] = {
-//             backgroundColor: color,
-//           }
-//           newUtilities[`.border-${colorName}-${shadeName}-${i * 100}`] = {
-//             borderColor: color,
-//           }
-//         }
-//       })
-//     }
-//   })
-
-//   addUtilities(newUtilities)
-// }

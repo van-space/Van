@@ -1,4 +1,14 @@
-export const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_APIURL || '/api/v2'
+import { env } from 'next-runtime-env'
 
-export const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL || ''
+import { isClientSide, isDev } from '~/lib/env'
+
+export const API_URL: string = (() => {
+  if (isDev) return env('NEXT_PUBLIC_API_URL') || ''
+
+  if (isClientSide && env('NEXT_PUBLIC_CLIENT_API_URL')) {
+    return env('NEXT_PUBLIC_CLIENT_API_URL') || ''
+  }
+
+  return env('NEXT_PUBLIC_API_URL') || '/api/v2'
+})() as string
+export const GATEWAY_URL = env('NEXT_PUBLIC_GATEWAY_URL') || ''
