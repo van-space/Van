@@ -6,22 +6,23 @@ import type { UseFloatingOptions } from '@floating-ui/react-dom'
 import type { FC, PropsWithChildren } from 'react'
 
 import useClickAway from '~/hooks/common/use-click-away'
-import { clsxm } from '~/utils/helper'
+import { clsxm } from '~/lib/helper'
 
 import { RootPortal } from '../portal'
 import styles from './index.module.css'
 
-export const FloatPopover: FC<
-  PropsWithChildren<{
-    TriggerComponent: FC
+export function FloatPopover<T extends {}>(
+  props: PropsWithChildren<{
+    TriggerComponent: FC<T>
     headless?: boolean
-    wrapperClassNames?: string
+    wrapperClassName?: string
     trigger?: 'click' | 'hover' | 'both'
     padding?: number
     offset?: number
     popoverWrapperClassNames?: string
     popoverClassNames?: string
 
+    triggerComponentProps?: T
     /**
      * 不消失
      */
@@ -36,11 +37,11 @@ export const FloatPopover: FC<
      */
     type?: 'tooltip' | 'popover'
   }> &
-    UseFloatingOptions
-> = (props) => {
+    UseFloatingOptions,
+) {
   const {
     headless = false,
-    wrapperClassNames,
+    wrapperClassName: wrapperClassNames,
     TriggerComponent,
     trigger = 'hover',
     padding,
@@ -51,6 +52,7 @@ export const FloatPopover: FC<
     animate = true,
     as: As = 'div',
     type = 'popover',
+    triggerComponentProps,
     ...floatingProps
   } = props
 
@@ -195,14 +197,15 @@ export const FloatPopover: FC<
       ref={refs.setReference}
       {...listener}
     >
-      {React.cloneElement(<TriggerComponent />, {
+      {/* @ts-expect-error */}
+      {React.cloneElement(<TriggerComponent {...triggerComponentProps} />, {
         tabIndex: 0,
       })}
     </As>
   )
 
   useEffect(() => {
-    if (refs.floating.current && open) {
+    if (refs.floating.current && open && type === 'popover') {
       refs.floating.current.focus()
     }
   }, [open])
@@ -240,7 +243,7 @@ export const FloatPopover: FC<
                   headless && styles['headless'],
                   animate && styles['animate'],
                   type === 'tooltip'
-                    ? `rounded-full bg-base-100 px-4 py-2 ${styles['headless']}`
+                    ? `max-w-[25rem] break-all rounded-xl px-4 py-2 ${styles['headless']}`
                     : styles['popover-root'],
                   popoverClassNames,
                 )}

@@ -1,5 +1,9 @@
-import { appConfig } from '~/app.config'
+import { isDev } from '~/lib/env'
+import { aggregationDataAtom } from '~/providers/root/aggregation-data-provider'
+
+import { jotaiStore } from './store'
 
 export function urlBuilder(path = '') {
-  return new URL(path, appConfig.site.url)
+  if (isDev) return new URL(path, 'http://localhost:2323')
+  return new URL(path, jotaiStore.get(aggregationDataAtom)?.url.webUrl)
 }

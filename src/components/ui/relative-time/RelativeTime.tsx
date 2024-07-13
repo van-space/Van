@@ -1,8 +1,10 @@
+'use client'
+
 import { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 import type { FC } from 'react'
 
-import { parseDate, relativeTimeFromNow } from '~/utils/datetime'
+import { parseDate, relativeTimeFromNow } from '~/lib/datetime'
 
 export const RelativeTime: FC<{
   date: string | Date

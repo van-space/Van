@@ -10,8 +10,9 @@ import type { FC, ReactNode } from 'react'
 import { LazyLoad } from '~/components/common/Lazyload'
 import { useIsUnMounted } from '~/hooks/common/use-is-unmounted'
 import { calculateDimensions } from '~/lib/calc-image'
-import { useMarkdownImageRecord } from '~/providers/article/markdown-image-record-provider'
-import { clsxm } from '~/utils/helper'
+import { isDev } from '~/lib/env'
+import { clsxm } from '~/lib/helper'
+import { useMarkdownImageRecord } from '~/providers/article/MarkdownImageRecordProvider'
 
 import { Divider } from '../divider'
 import imageStyles from './ZoomedImage.module.css'
@@ -59,9 +60,7 @@ export const ImageLazy: Component<TImageProps & BaseImageProps> = ({
   const [zoomer_] = useState(() => {
     if (isServer) return null
     if (zoomer) return zoomer
-    const zoom = mediumZoom(undefined, {
-      background: 'var(--sbg)',
-    })
+    const zoom = mediumZoom(undefined)
     zoomer = zoom
     return zoom
   }) as [Zoom]
@@ -79,7 +78,6 @@ export const ImageLazy: Component<TImageProps & BaseImageProps> = ({
     },
     [isUnmount],
   )
-
   const imageRef = useRef<HTMLImageElement>(null)
   useEffect(() => {
     if (imageLoadStatus !== ImageLoadStatus.Loaded) {
@@ -101,11 +99,12 @@ export const ImageLazy: Component<TImageProps & BaseImageProps> = ({
 
   return (
     <LazyLoad placeholder={placeholder} offset={30}>
-      <figure suppressHydrationWarning>
-        <span className="relative block">
+      <figure>
+        <span className="relative flex justify-center">
           <span>
             {imageLoadStatus !== ImageLoadStatus.Loaded && placeholder}
           </span>
+
           <img
             src={src}
             title={title}
@@ -150,6 +149,9 @@ export const ZoomedImage: Component<TImageProps> = (props) => {
 
 interface FixedImageProps extends TImageProps {
   containerWidth: number
+
+  height?: number
+  width?: number
 }
 export const FixedZoomedImage: Component<FixedImageProps> = (props) => {
   const placeholder = useMemo(() => {
@@ -158,19 +160,27 @@ export const FixedZoomedImage: Component<FixedImageProps> = (props) => {
   return <ImageLazy zoom placeholder={placeholder} {...props} />
 }
 
-const Placeholder: FC<Pick<FixedImageProps, 'src' | 'containerWidth'>> = ({
-  src,
-  containerWidth,
-}) => {
+const Placeholder: FC<
+  Pick<FixedImageProps, 'src' | 'containerWidth' | 'height' | 'width'>
+> = ({ src, containerWidth, height: manualHeight, width: manualWidth }) => {
   const imageMeta = useMarkdownImageRecord(src)
 
   const scaledSize = useMemo(() => {
-    if (!imageMeta) return
-    const { height, width } = imageMeta
+    let nextHeight = manualHeight
+    let nextWidth = manualWidth
+
+    if (!nextHeight || !nextWidth) {
+      if (!imageMeta) {
+        return
+      }
+      nextHeight = imageMeta.height
+      nextWidth = imageMeta.width
+    }
+
     if (containerWidth <= 0) return
     const { height: scaleHeight, width: scaleWidth } = calculateDimensions({
-      width,
-      height,
+      width: nextWidth,
+      height: nextHeight,
       max: {
         width: containerWidth,
         height: Infinity,
@@ -181,13 +191,18 @@ const Placeholder: FC<Pick<FixedImageProps, 'src' | 'containerWidth'>> = ({
       scaleHeight,
       scaleWidth,
     }
-  }, [imageMeta, containerWidth])
+  }, [manualHeight, manualWidth, containerWidth, imageMeta])
 
   if (!scaledSize) return <NoFixedPlaceholder accent={imageMeta?.accent} />
 
   return (
     <span
-      className={styles.base}
+      className={`image-placeholder ${styles.base}`}
+      data-width={scaledSize.scaleWidth}
+      data-height={scaledSize.scaleHeight}
+      data-from-record-height={imageMeta?.height}
+      data-from-record-width={imageMeta?.width}
+      data-src={src}
       style={{
         height: scaledSize.scaleHeight,
         width: scaledSize.scaleWidth,
@@ -201,11 +216,13 @@ const NoFixedPlaceholder = ({ accent }: { accent?: string }) => {
   return (
     <span
       className={clsxm(
+        'image-placeholder',
         styles.base,
         'h-[300px] w-full bg-slate-300 dark:bg-slate-700',
       )}
       style={{
         backgroundColor: accent,
+        outline: isDev ? '4px solid red' : undefined,
       }}
     />
   )

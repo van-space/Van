@@ -1,23 +1,29 @@
 import { useQuery } from '@tanstack/react-query'
 import type { SubscribeTypeToBitMap } from '@mx-space/api-client'
 
+import { apiClient } from '~/lib/request'
 import { useModalStack } from '~/providers/root/modal-stack-provider'
-import { apiClient } from '~/utils/request'
 
 import { SubscribeModal } from './SubscribeModal'
 
-const SWR_CHECK_SUBSCRIBE_KEY = ['subscribe-status']
+const QUERY_CHECK_SUBSCRIBE_KEY = ['subscribe-status']
 
 export const useSubscribeStatusQuery = () => {
-  return useQuery(SWR_CHECK_SUBSCRIBE_KEY, apiClient.subscribe.check, {
+  return useQuery(QUERY_CHECK_SUBSCRIBE_KEY, apiClient.subscribe.check, {
     cacheTime: 60_000 * 10,
   })
 }
 
 export const useIsEnableSubscribe = () =>
   useQuery({
-    queryKey: SWR_CHECK_SUBSCRIBE_KEY,
+    queryKey: QUERY_CHECK_SUBSCRIBE_KEY,
+    queryFn: apiClient.subscribe.check,
     select: (data: { enable: boolean }) => data?.enable,
+    cacheTime: 60_000 * 10,
+    staleTime: 60_000 * 10,
+    meta: {
+      persist: false,
+    },
   })
 
 export const usePresentSubscribeModal = (

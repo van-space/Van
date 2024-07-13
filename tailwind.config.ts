@@ -1,7 +1,7 @@
 import daisyui from 'daisyui'
 import { withTV } from 'tailwind-variants/transformer'
 import twColors from 'tailwindcss/colors'
-import resolveConfig from 'tailwindcss/resolveConfig'
+import type { Config } from 'tailwindcss'
 import type { PluginAPI } from 'tailwindcss/types/config'
 
 import { addDynamicIconSelectors } from '@iconify/tailwind'
@@ -166,7 +166,7 @@ const UIKitColors = {
   },
 }
 
-const twConfig = resolveConfig({
+const twConfig: Config = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   darkMode: ['class', '[data-theme="dark"]'],
   theme: {
@@ -176,7 +176,7 @@ const twConfig = resolveConfig({
       fontFamily: {
         sans: 'var(--font-sans),system-ui,-apple-system,PingFang SC,"Microsoft YaHei",Segoe UI,Roboto,Helvetica,noto sans sc,hiragino sans gb,"sans-serif",Apple Color Emoji,Segoe UI Emoji,Not Color Emoji',
         serif:
-          'var(--font-serif),"Noto Serif CJK SC","Noto Serif SC","Source Han Serif SC","Source Han Serif",source-han-serif-sc,SongTi SC,SimSum,"Hiragino Sans GB",system-ui,-apple-system,Segoe UI,Roboto,Helvetica,"Microsoft YaHei","WenQuanYi Micro Hei",sans-serif',
+          '"Noto Serif CJK SC","Noto Serif SC",var(--font-serif),"Source Han Serif SC","Source Han Serif",source-han-serif-sc,SongTi SC,SimSum,"Hiragino Sans GB",system-ui,-apple-system,Segoe UI,Roboto,Helvetica,"Microsoft YaHei","WenQuanYi Micro Hei",sans-serif',
         mono: `"OperatorMonoSSmLig Nerd Font","Cascadia Code PL","FantasqueSansMono Nerd Font","operator mono","Fira code Retina","Fira code","Consolas", Monaco, "Hannotate SC", monospace, -apple-system`,
       },
       screens: {
@@ -215,19 +215,16 @@ const twConfig = resolveConfig({
       {
         light: {
           'color-scheme': 'light',
-          primary: '#39C5BB',
-          // 'primary-focus': '#25CCA0',
-          // 'primary-content': UIKitColors.label.primary.light,
-          secondary: '#6495ed',
-          // 'secondary-foucs': '#92bbff',
-          // 'secondary-content': UIKitColors.label.secondary.light,
-          accent: '#39C5BB',
-          // 'accent-focus': '#25CCA0',
+          // 浅葱
+          primary: '#33A6B8',
+
+          secondary: '#A8D8B9',
+
+          accent: '#33A6B8',
+
           'accent-content': '#fafafa',
 
           neutral: UIKitColors.grey3.light,
-
-          // 'base-100': '#eeeeee',
 
           'base-content': UIKitColors.label.primary.light,
 
@@ -244,9 +241,11 @@ const twConfig = resolveConfig({
       {
         dark: {
           'color-scheme': 'dark',
-          primary: '#1f8f93',
-          secondary: '#92bbff',
-          accent: '#91bef0',
+          // 桃
+          primary: '#F596AA',
+          // 洗朱
+          secondary: '#FB966E',
+          accent: '#F596AA',
 
           neutral: UIKitColors.grey3.dark,
 
@@ -277,7 +276,7 @@ const twConfig = resolveConfig({
     // variableColorsPlugin(twColors),
     // ColorPlugin,
   ],
-})
+}
 
 function addShortcutPlugin({ addUtilities }: PluginAPI) {
   const styles = {
@@ -297,6 +296,9 @@ function addShortcutPlugin({ addUtilities }: PluginAPI) {
     '.center': {
       'align-items': 'center',
       'justify-content': 'center',
+    },
+    '.fill-content': {
+      'min-height': `calc(100vh - 17.5rem)`,
     },
   }
   addUtilities(styles)

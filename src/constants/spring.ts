@@ -17,3 +17,16 @@ export const microReboundPreset: Spring = {
   stiffness: 300,
   damping: 20,
 }
+
+export const softSpringPreset: Spring = {
+  duration: 0.35,
+  type: 'spring',
+  stiffness: 120,
+  damping: 20,
+}
+
+export const softBouncePrest: Spring = {
+  type: 'spring',
+  damping: 10,
+  stiffness: 100,
+}

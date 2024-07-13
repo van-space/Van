@@ -1,26 +1,30 @@
-import { useEffect } from 'react'
+'use client'
 
-import { useArticleElement } from '~/providers/article/article-element-provider'
+import { useEffect } from 'react'
 
 import { escapeSelector } from './escapeSelector'
 
 export const TocAutoScroll: Component = () => {
-  const articleElement = useArticleElement()
-
   useEffect(() => {
     const hash = escapeSelector(
       decodeURIComponent(window.location.hash.slice(1)),
     )
 
-    if (!articleElement) return
-
     if (hash) {
-      const el = articleElement.querySelector(`#${hash}`)
+      const el = document.getElementById(hash)
       if (el) {
         el.scrollIntoView({ behavior: 'smooth', block: 'center' })
       }
     }
   }, [])
+
+  // const isTop = usePageScrollLocationSelector((y) => y < 10)
+
+  // useEffect(() => {
+  //   if (isTop) {
+  //     history.replaceState(history.state, '', `#`)
+  //   }
+  // }, [isTop])
 
   return null
 }

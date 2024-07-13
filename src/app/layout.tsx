@@ -1,35 +1,51 @@
 import '../styles/index.css'
 
-import { dehydrate } from '@tanstack/react-query'
 import { Analytics } from '@vercel/analytics/react'
 import { ToastContainer } from 'react-toastify'
-import { headers } from 'next/dist/client/components/headers'
+import type { AggregateRoot } from '@mx-space/api-client'
 
 import { ClerkProvider } from '@clerk/nextjs'
 
+import PKG from '~/../package.json'
+import { appConfig } from '~/app.config'
 import { Root } from '~/components/layout/root/Root'
-import { REQUEST_GEO, REQUEST_PATHNAME } from '~/constants/system'
+import { TocAutoScroll } from '~/components/widgets/toc/TocAutoScroll'
+import { attachUA } from '~/lib/attach-ua'
 import { defineMetadata } from '~/lib/define-metadata'
 import { sansFont, serifFont } from '~/lib/fonts'
-import { getQueryClient } from '~/utils/query-client.server'
+import { getQueryClient } from '~/lib/query-client.server'
+import { AggregationProvider } from '~/providers/root/aggregation-data-provider'
+import { queries } from '~/queries/definition'
 
 import { Providers } from '../providers/root'
-import { Hydrate } from './hydrate'
+import { Analyze } from './analyze'
 import { init } from './init'
 
+const { version } = PKG
 init()
 
+let aggregationData: AggregateRoot | null = null
 export const generateMetadata = defineMetadata(async (_, getData) => {
-  const { seo, url, user } = await getData()
+  const fetchedData = aggregationData ?? (await getData())
+  aggregationData = fetchedData
+  const { seo, url, user } = fetchedData
 
   return {
     metadataBase: new URL(url.webUrl),
     title: {
-      template: `%s | ${seo.title}`,
+      template: `%s - ${seo.title}`,
       default: `${seo.title} - ${seo.description}`,
     },
     description: seo.description,
     keywords: seo.keywords?.join(',') || '',
+    icons: [
+      {
+        url: appConfig.site.favicon,
+        type: 'image/svg+xml',
+        sizes: 'any',
+      },
+    ],
+
     themeColor: [
       { media: '(prefers-color-scheme: dark)', color: '#000212' },
       { media: '(prefers-color-scheme: light)', color: '#fafafa' },
@@ -56,6 +72,10 @@ export const generateMetadata = defineMetadata(async (_, getData) => {
       locale: 'zh_CN',
       type: 'website',
       url: url.webUrl,
+      images: {
+        url: user.avatar,
+        username: user.name,
+      },
     },
     twitter: {
       creator: `@${user.username}`,
@@ -71,52 +91,63 @@ type Props = {
 }
 
 export default async function RootLayout(props: Props) {
+  attachUA()
   const { children } = props
 
   const queryClient = getQueryClient()
 
-  const dehydratedState = dehydrate(queryClient, {
-    shouldDehydrateQuery: (query) => {
-      if (query.state.error) return false
-      if (!query.meta) return true
-      const {
-        shouldHydration,
-        hydrationRoutePath,
-        skipHydration,
-        forceHydration,
-      } = query.meta
-
-      if (forceHydration) return true
-      if (hydrationRoutePath) {
-        const pathname = headers().get(REQUEST_PATHNAME)
-
-        if (pathname === query.meta?.hydrationRoutePath) {
-          if (!shouldHydration) return true
-          return (shouldHydration as Function)(query.state.data as any)
-        }
-      }
-
-      if (skipHydration) return false
-
-      return (shouldHydration as Function)?.(query.state.data as any) ?? false
-    },
+  const data = await queryClient.fetchQuery({
+    ...queries.aggregation.root(),
   })
-  const geo = headers().get(REQUEST_GEO)
+
+  aggregationData = data
 
   return (
     // <ClerkProvider localization={ClerkZhCN}>
     <ClerkProvider>
       <html lang="zh-CN" className="noise" suppressHydrationWarning>
+        <head>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `var version = "${version}";
+              ${function info() {
+                console.log(
+                  `%c Mix Space %c https://github.com/mx-space `,
+                  'color: #fff; margin: 1em 0; padding: 5px 0; background: #2980b9;',
+                  'margin: 1em 0; padding: 5px 0; background: #efefef;',
+                )
+                console.log(
+                  `%c Shiro ${version} %c https://innei.ren `,
+                  'color: #fff; margin: 1em 0; padding: 5px 0; background: #39C5BB;',
+                  'margin: 1em 0; padding: 5px 0; background: #efefef;',
+                )
+
+                const motto = `
+This Personal Space Powered By Mix Space.
+Written by TypeScript, Coding with Love.
+--------
+Stay hungry. Stay foolish. --Steve Jobs
+`
+
+                if (document.firstChild?.nodeType !== Node.COMMENT_NODE) {
+                  document.prepend(document.createComment(motto))
+                }
+              }.toString()}; info()`,
+            }}
+          />
+        </head>
         <body
-          className={`${sansFont.variable} ${serifFont.variable} m-0 h-full p-0 font-sans antialiased`}
+          className={`${sansFont.variable} ${serifFont.variable} m-0 h-full p-0 font-sans`}
         >
           <Providers>
-            <Hydrate state={dehydratedState}>
-              <Root>{children}</Root>
-            </Hydrate>
+            <AggregationProvider aggregationData={data} />
+
+            <Root>{children}</Root>
+
+            <TocAutoScroll />
+            <Analyze />
           </Providers>
           <ToastContainer />
-          {!!geo && <div>{geo}</div>}
         </body>
       </html>
       <Analytics />

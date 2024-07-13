@@ -1,43 +1,83 @@
 'use client'
 
-import React, { memo, useMemo } from 'react'
+import React, { memo } from 'react'
 import clsx from 'clsx'
-import { motion, useMotionValue } from 'framer-motion'
+import {
+  AnimatePresence,
+  m,
+  useMotionTemplate,
+  useMotionValue,
+} from 'framer-motion'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import type { IHeaderMenu } from '../config'
 
-import { FloatPopover } from '~/components/ui/float-popover'
-import { clsxm } from '~/utils/helper'
+import { RootPortal } from '~/components/ui/portal'
+import { clsxm } from '~/lib/helper'
+import { useScollIsUpAndPageIsOver } from '~/providers/root/page-scroll-info-provider'
 
 import { useHeaderConfig } from './HeaderDataConfigureProvider'
-import { useMenuOpacity } from './hooks'
+import { useHeaderHasMetaInfo, useMenuOpacity } from './hooks'
+import { MenuPopover } from './MenuPopover'
 
 export const HeaderContent = () => {
   return (
-    <AnimatedMenu>
-      <ForDesktop />
-    </AnimatedMenu>
+    <>
+      <AnimatedMenu>
+        <ForDesktop />
+      </AnimatedMenu>
+      <AccessibleMenu />
+    </>
+  )
+}
+
+const AccessibleMenu: Component = () => {
+  const hasMetaInfo = useHeaderHasMetaInfo()
+
+  const showShow = useScollIsUpAndPageIsOver(600) && hasMetaInfo
+  return (
+    <RootPortal>
+      <AnimatePresence>
+        {showShow && (
+          <m.div
+            layout
+            layoutRoot
+            initial={{ y: -64 }}
+            animate={{ y: 0 }}
+            exit={{ y: -20, opacity: 0 }}
+            className="fixed left-0 right-0 top-[6rem] z-10 flex justify-center duration-[100ms]"
+          >
+            <ForDesktop />
+          </m.div>
+        )}
+      </AnimatePresence>
+    </RootPortal>
   )
 }
 
 const AnimatedMenu: Component = ({ children }) => {
   const opacity = useMenuOpacity()
 
+  const hasMetaInfo = useHeaderHasMetaInfo()
+  const shouldHideNavBg = !hasMetaInfo && opacity === 0
   return (
-    <div
+    <m.div
       className="duration-[100ms]"
       style={{
-        opacity,
-        visibility: opacity === 0 ? 'hidden' : 'visible',
+        opacity: hasMetaInfo ? opacity : 1,
+        visibility: opacity === 0 && hasMetaInfo ? 'hidden' : 'visible',
       }}
     >
-      {children}
-    </div>
+      {/* @ts-ignore */}
+      {React.cloneElement(children, { shouldHideNavBg })}
+    </m.div>
   )
 }
 
-const ForDesktop: Component = ({ className }) => {
+const ForDesktop: Component<{
+  shouldHideNavBg?: boolean
+  animatedIcon?: boolean
+}> = ({ className, shouldHideNavBg, animatedIcon = true }) => {
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
   const radius = useMotionValue(0)
@@ -54,8 +94,10 @@ const ForDesktop: Component = ({ className }) => {
   const { config: headerMenuConfig } = useHeaderConfig()
   const pathname = usePathname()
 
+  const background = useMotionTemplate`radial-gradient(${radius}px circle at ${mouseX}px ${mouseY}px, var(--spotlight-color) 0%, transparent 65%)`
+
   return (
-    <motion.nav
+    <m.nav
       layout="size"
       onMouseMove={handleMouseMove}
       className={clsxm(
@@ -63,32 +105,48 @@ const ForDesktop: Component = ({ className }) => {
         'rounded-full bg-gradient-to-b from-zinc-50/70 to-white/90',
         'shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur-md',
         'dark:from-zinc-900/70 dark:to-zinc-800/90 dark:ring-zinc-100/10',
-
+        'group [--spotlight-color:hsl(var(--a)_/_0.05)]',
+        'duration-200',
+        shouldHideNavBg && 'bg-none shadow-none ring-transparent',
         className,
       )}
     >
-      <ul className="flex bg-transparent px-4 font-medium text-zinc-800 dark:text-zinc-200 ">
+      {/* Spotlight overlay */}
+      <m.div
+        className="pointer-events-none absolute -inset-px rounded-full opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        style={{ background }}
+        aria-hidden="true"
+      />
+      <div className="flex px-4 font-medium text-zinc-800 dark:text-zinc-200">
         {headerMenuConfig.map((section) => {
+          const subItemActive =
+            section.subMenu?.findIndex((item) => item.path === pathname) || -1
           return (
             <HeaderMenuItem
+              iconLayout={animatedIcon}
               section={section}
               key={section.path}
+              subItemActive={section.subMenu?.[subItemActive]}
               isActive={
                 pathname === section.path ||
-                pathname.startsWith(`${section.path}/`)
+                pathname.startsWith(`${section.path}/`) ||
+                subItemActive > -1 ||
+                false
               }
             />
           )
         })}
-      </ul>
-    </motion.nav>
+      </div>
+    </m.nav>
   )
 }
 
 const HeaderMenuItem = memo<{
   section: IHeaderMenu
   isActive: boolean
-}>(({ section, isActive }) => {
+  subItemActive?: IHeaderMenu
+  iconLayout?: boolean
+}>(({ section, isActive, subItemActive, iconLayout }) => {
   const href = section.path
 
   return (
@@ -96,66 +154,24 @@ const HeaderMenuItem = memo<{
       <AnimatedItem
         href={href}
         isActive={isActive}
-        className={clsx(
-          'transition-[padding]',
-          // '[&:hover_.icon]:-translate-x-[calc(100%+6px)] [&:hover_.icon]:opacity-100',
-          '[&.active_.icon]:-translate-x-[calc(100%+6px)] [&.active_.icon]:opacity-80',
-          '[&.active]:pl-6',
-        )}
+        className={clsx('transition-[padding]')}
       >
-        <span className="relative">
-          <span
-            className={clsxm(
-              'pointer-events-none absolute bottom-0 left-0 top-0 flex items-center opacity-0 duration-200',
-              'icon',
-            )}
-          >
-            {section.icon}
-          </span>
-          {section.title}
+        <span className="relative flex items-center">
+          {isActive && (
+            <m.span
+              layoutId={iconLayout ? 'header-menu-icon' : undefined}
+              className={clsxm('mr-2 flex items-center')}
+            >
+              {subItemActive?.icon ?? section.icon}
+            </m.span>
+          )}
+          <m.span layout>{subItemActive?.title ?? section.title}</m.span>
         </span>
       </AnimatedItem>
     </MenuPopover>
   )
 })
 HeaderMenuItem.displayName = 'HeaderMenuItem'
-
-const MenuPopover: Component<{
-  subMenu: IHeaderMenu['subMenu']
-}> = memo(({ children, subMenu }) => {
-  const TriggerComponent = useMemo(() => () => children, [children])
-  if (!subMenu) return children
-  return (
-    <FloatPopover
-      strategy="fixed"
-      headless
-      placement="bottom"
-      offset={10}
-      popoverWrapperClassNames="z-[19] relative"
-      popoverClassNames="rounded-xl !p-0"
-      TriggerComponent={TriggerComponent}
-    >
-      {!!subMenu.length && (
-        <div className="relative flex w-[130px] flex-col px-4">
-          {subMenu.map((m) => {
-            return (
-              <Link
-                key={m.title}
-                href={m.path}
-                className="flex w-full items-center justify-around space-x-2 py-3 duration-200 hover:text-accent"
-                role="button"
-              >
-                {!!m.icon && <span>{m.icon}</span>}
-                <span>{m.title}</span>
-              </Link>
-            )
-          })}
-        </div>
-      )}
-    </FloatPopover>
-  )
-})
-MenuPopover.displayName = 'MenuPopover'
 
 function AnimatedItem({
   href,
@@ -169,7 +185,7 @@ function AnimatedItem({
   isActive?: boolean
 }) {
   return (
-    <li>
+    <div>
       <Link
         href={href}
         className={clsxm(
@@ -181,7 +197,7 @@ function AnimatedItem({
       >
         {children}
         {isActive && (
-          <motion.span
+          <m.span
             className={clsx(
               'absolute inset-x-1 -bottom-px h-px',
               'bg-gradient-to-r from-accent/0 via-accent/70 to-accent/0',
@@ -190,6 +206,6 @@ function AnimatedItem({
           />
         )}
       </Link>
-    </li>
+    </div>
   )
 }

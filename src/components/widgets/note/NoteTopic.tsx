@@ -1,11 +1,11 @@
 import Link from 'next/link'
-import type { TopicModel } from '@mx-space/api-client'
 import type { FC } from 'react'
 
 import { Avatar } from '~/components/ui/avatar'
 import { Divider } from '~/components/ui/divider'
 import { FloatPopover } from '~/components/ui/float-popover'
 import { routeBuilder, Routes } from '~/lib/route-builder'
+import { useCurrentNoteDataSelector } from '~/providers/note/CurrentNoteDataProvider'
 
 import { NoteTopicDetail } from './NoteTopicDetail'
 import { NoteTopicMarkdownRender } from './NoteTopicMarkdownRender'
@@ -19,8 +19,9 @@ const textToBigCharOrWord = (name: string | undefined) => {
   return bigChar
 }
 
-export const NoteTopic: FC<{ topic?: TopicModel }> = (props) => {
-  const { topic } = props
+export const NoteTopic: FC = () => {
+  const topic = useCurrentNoteDataSelector((state) => state?.data.topic)
+
   if (!topic) return null
   const { icon, name, introduce } = topic
 
@@ -37,6 +38,7 @@ export const NoteTopic: FC<{ topic?: TopicModel }> = (props) => {
           text={textToBigCharOrWord(name)}
           className="flex-shrink-0"
           shadow={false}
+          alt={`专栏 ${name} 的头像`}
         />
         <div className="flex flex-grow flex-col self-start">
           <span className="text-md mb-2 font-medium">

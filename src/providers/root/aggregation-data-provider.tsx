@@ -1,34 +1,51 @@
-import { useCallback, useEffect } from 'react'
+'use client'
+
+import { useCallback, useEffect, useRef } from 'react'
 import { atom, useAtomValue } from 'jotai'
 import { selectAtom } from 'jotai/utils'
 import type { AggregateRoot } from '@mx-space/api-client'
 import type { FC, PropsWithChildren } from 'react'
 
+import { fetchAppUrl } from '~/atoms'
 import { login } from '~/atoms/owner'
-import { useAggregationQuery } from '~/hooks/data/use-aggregation'
+import { useBeforeMounted } from '~/hooks/common/use-before-mounted'
 import { jotaiStore } from '~/lib/store'
 
 export const aggregationDataAtom = atom<null | AggregateRoot>(null)
 
-export const AggregationProvider: FC<PropsWithChildren> = ({ children }) => {
-  const { data } = useAggregationQuery()
+export const AggregationProvider: FC<
+  PropsWithChildren<{
+    aggregationData: AggregateRoot
+  }>
+> = ({ children, aggregationData }) => {
+  useBeforeMounted(() => {
+    if (!aggregationData) return
+    jotaiStore.set(aggregationDataAtom, aggregationData)
+  })
 
   useEffect(() => {
-    if (!data) return
-    jotaiStore.set(aggregationDataAtom, data)
-  }, [data])
+    if (!aggregationData) return
+    jotaiStore.set(aggregationDataAtom, aggregationData)
+  }, [aggregationData])
 
+  const callOnceRef = useRef(false)
   useEffect(() => {
-    login()
-  }, [])
+    if (callOnceRef.current) return
+    if (!aggregationData?.user) return
+    callOnceRef.current = true
+
+    login().then((logged) => {
+      if (logged) {
+        // FIXME
+        setTimeout(() => {
+          fetchAppUrl()
+        }, 1000)
+      }
+    })
+  }, [aggregationData?.user])
 
   return children
 }
-
-/**
- * Not recommended to use
- */
-export const useAggregationData = () => useAtomValue(aggregationDataAtom)
 
 export const useAggregationSelector = <T,>(
   selector: (atomValue: AggregateRoot) => T,
@@ -44,3 +61,5 @@ export const useAggregationSelector = <T,>(
       ),
     ),
   )
+
+export const getAggregationData = () => jotaiStore.get(aggregationDataAtom)

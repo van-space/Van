@@ -1,14 +1,22 @@
 import * as Dialog from '@radix-ui/react-dialog'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 
-export const DialogOverlay = () => {
+export const DialogOverlay = ({
+  onClick,
+  zIndex,
+}: {
+  onClick?: () => void
+  zIndex?: number
+}) => {
   return (
     <Dialog.Overlay asChild>
-      <motion.div
-        className="fixed inset-0 z-[11] bg-slate-50/80 backdrop-blur-sm dark:bg-neutral-900/80"
+      <m.div
+        onClick={onClick}
+        className="fixed inset-0 z-[11] bg-slate-50/80 dark:bg-neutral-900/80"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
+        style={{ zIndex }}
       />
     </Dialog.Overlay>
   )

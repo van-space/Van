@@ -1,11 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
-import type { FC, SVGProps } from 'react'
+import type { FC, ReactNode, SVGProps } from 'react'
 
-import { AutoResizeHeight } from '~/components/common/AutoResizeHeight'
+import { AutoResizeHeight } from '~/components/widgets/shared/AutoResizeHeight'
 import { useIsClient } from '~/hooks/common/use-is-client'
-import { useNoteData } from '~/hooks/data/use-note'
-import { clsxm } from '~/utils/helper'
-import { apiClient } from '~/utils/request'
+import { clsxm } from '~/lib/helper'
+import { apiClient } from '~/lib/request'
+import { useCurrentNoteDataSelector } from '~/providers/note/CurrentNoteDataProvider'
+import { useCurrentPostDataSelector } from '~/providers/post/CurrentPostDataProvider'
 
 const XLogSummary: FC<{
   cid: string
@@ -27,23 +28,17 @@ const XLogSummary: FC<{
     },
     {
       enabled: !!cid,
-      cacheTime: 10000,
+      staleTime: 1000 * 60 * 60 * 24 * 7,
     },
   )
 
   const isClient = useIsClient()
-  if (!isClient) {
-    return null
-  }
 
-  if (!cid) {
-    return null
-  }
-
-  return (
+  let Inner: ReactNode = (
     <div
+      data-hide-print
       className={clsxm(
-        `mt-4 space-y-2 rounded-xl border border-slate-200 p-4 dark:border-neutral-800`,
+        `space-y-2 rounded-xl border border-slate-200 p-4 dark:border-neutral-800`,
         props.className,
       )}
     >
@@ -59,7 +54,7 @@ const XLogSummary: FC<{
         {isLoading && (
           <p className="border-slate-200 text-right text-sm dark:border-slate-800 ">
             (此服务由{' '}
-            <a href="https://xlog.app" target="_blank">
+            <a href="https://xlog.app" target="_blank" rel="noreferrer">
               xLog
             </a>{' '}
             驱动)
@@ -68,21 +63,32 @@ const XLogSummary: FC<{
       </AutoResizeHeight>
     </div>
   )
+  if (!isClient) {
+    Inner = null
+  }
+
+  if (!cid) {
+    Inner = null
+  }
+
+  return (
+    <AutoResizeHeight duration={0.2} className="mt-4">
+      {Inner}
+    </AutoResizeHeight>
+  )
 }
 
-// export const XLogSummaryForPost: FC<{
-//   id: string
-// }> = ({ id }) => {
-//   const cid = usePostCollection((state) => state.data.get(id)?.meta?.xLog?.cid)
+export const XLogSummaryForPost: FC = () => {
+  const cid = useCurrentPostDataSelector((data) => data?.meta?.xLog?.cid)
 
-//   if (!cid) return null
+  if (!cid) return null
 
-//   return <XLogSummary cid={cid} className="mb-4" />
-// }
+  return <XLogSummary cid={cid} className="mb-4" />
+}
 
 export const XLogSummaryForNote: FC = () => {
-  const data = useNoteData()
-  const cid = data?.meta?.xLog?.cid
+  const cid = useCurrentNoteDataSelector((data) => data?.data.meta?.xLog?.cid)
+
   if (!cid) return null
 
   return <XLogSummary cid={cid} />

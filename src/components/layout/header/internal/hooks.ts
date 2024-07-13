@@ -1,34 +1,40 @@
-import { atom, useAtomValue } from 'jotai'
+import { useEffect } from 'react'
+import { atom, useAtomValue, useSetAtom } from 'jotai'
 
+import { useIsMobile } from '~/atoms'
 import { jotaiStore } from '~/lib/store'
 import { usePageScrollLocationSelector } from '~/providers/root/page-scroll-info-provider'
 
-export const useMenuOpacity = () => {
-  // const scrollDirection = usePageScrollDirection()
-  const headerOpacity = useHeaderBgOpacity()
-  const opacity = 1 - headerOpacity
+const headerMetaTitleAtom = atom('')
+const headerMetaDescriptionAtom = atom('')
+const headerMetaSlugAtom = atom('')
+const headerShouldShowBgAtom = atom(true)
 
-  // if (scrollDirection === 'up') {
-  //   opacity = 1
-  // }
-  return opacity
+export const useHeaderShouldShowBg = () => useAtomValue(headerShouldShowBgAtom)
+export const useSetHeaderShouldShowBg = () => useSetAtom(headerShouldShowBgAtom)
+export const useMenuOpacity = () => {
+  const headerOpacity = useHeaderBgOpacity()
+
+  return 1 - headerOpacity
 }
 
 export const useMenuVisibility = () => useMenuOpacity() > 0
 
 export const useHeaderBgOpacity = () => {
   const threshold = 50
+  const isMobile = useIsMobile()
+  const headerShouldShowBg = useHeaderShouldShowBg() || isMobile
 
-  const headerOpacity = usePageScrollLocationSelector((y) =>
-    y >= threshold ? 1 : Math.floor((y / threshold) * 100) / 100,
+  return usePageScrollLocationSelector(
+    (y) =>
+      headerShouldShowBg
+        ? y >= threshold
+          ? 1
+          : Math.floor((y / threshold) * 100) / 100
+        : 0,
+    [headerShouldShowBg],
   )
-
-  return headerOpacity
 }
-
-const headerMetaTitleAtom = atom('')
-const headerMetaDescriptionAtom = atom('')
-const headerMetaSlugAtom = atom('')
 
 const headerMetaShouldShowAtom = atom((get) => {
   const title = get(headerMetaTitleAtom)
@@ -42,6 +48,13 @@ export const useHeaderMetaShouldShow = () => {
   return useAtomValue(headerMetaShouldShowAtom) && !v
 }
 export const useSetHeaderMetaInfo = () => {
+  useEffect(() => {
+    return () => {
+      jotaiStore.set(headerMetaTitleAtom, '')
+      jotaiStore.set(headerMetaDescriptionAtom, '')
+      jotaiStore.set(headerMetaSlugAtom, '')
+    }
+  }, [])
   return ({
     title,
     description,
@@ -63,4 +76,14 @@ export const useHeaderMetaInfo = () => {
     description: useAtomValue(headerMetaDescriptionAtom),
     slug: useAtomValue(headerMetaSlugAtom),
   }
+}
+
+const headerHasMetaInfoAtom = atom((get) => {
+  const title = get(headerMetaTitleAtom)
+  const description = get(headerMetaDescriptionAtom)
+
+  return title !== '' && description !== ''
+})
+export const useHeaderHasMetaInfo = () => {
+  return useAtomValue(headerHasMetaInfoAtom)
 }

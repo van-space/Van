@@ -1,8 +1,8 @@
 import { isServer } from '@tanstack/react-query'
 
-import { apiClient } from '~/utils/request'
+import { apiClient } from '~/lib/request'
 
-import { defineQuery } from './helper'
+import { defineQuery } from '../helper'
 
 export const aggregation = {
   root: () =>

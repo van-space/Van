@@ -1,16 +1,20 @@
 import { io } from 'socket.io-client'
 import type { EventTypes } from '~/types/events'
+import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context'
 import type { Socket } from 'socket.io-client'
 
 import { simpleCamelcaseKeys as camelcaseKeys } from '@mx-space/api-client'
 
 import { GATEWAY_URL } from '~/constants/env'
-import { isDev } from '~/utils/env'
+import { isDev } from '~/lib/env'
 
 import { eventHandler } from './handler'
 
 class SocketClient {
   public socket!: Socket
+
+  // @ts-expect-error
+  private router: AppRouterInstance
 
   constructor() {
     this.socket = io(`${GATEWAY_URL}/web`, {
@@ -20,6 +24,10 @@ class SocketClient {
       reconnectionAttempts: 3,
       transports: ['websocket'],
     })
+  }
+
+  setRouter(router: AppRouterInstance) {
+    this.router = router
   }
   initIO() {
     if (!this.socket) {
@@ -51,7 +59,7 @@ class SocketClient {
 
     window.dispatchEvent(new CustomEvent(type, { detail: data }))
 
-    eventHandler(type, data)
+    eventHandler(type, data, this.router)
   }
   emit(event: EventTypes, payload: any) {
     return new Promise((resolve) => {

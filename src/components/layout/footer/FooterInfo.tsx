@@ -1,6 +1,7 @@
 import Link from 'next/link'
 
-import { clsxm } from '~/utils/helper'
+import { SubscribeTextButton } from '~/components/widgets/subscribe/SubscribeTextButton'
+import { clsxm } from '~/lib/helper'
 
 import { linkSections } from './config'
 import { GatewayCount } from './GatewayCount'
@@ -79,15 +80,36 @@ const PoweredBy: Component = ({ className }) => {
         Mix Space
       </StyledLink>
       . <Divider />
-      <StyledLink href="https://github.com/innei/Springtide" target="_blank">
-        Springtide
+      <StyledLink href="https://github.com/innei/Shiro" target="_blank">
+        Shiro
       </StyledLink>
       .
     </span>
   )
 }
 
-const FooterBottom = () => {
+// type VisitorGeolocation = {
+//   country: string
+//   city?: string
+//   flag: string
+// }
+const FooterBottom = async () => {
+  // let lastVisitor: VisitorGeolocation | undefined = undefined
+  // if (process.env.VERCEL_ENV === 'production') {
+  //   const [lv, cv] = await redis.mget<VisitorGeolocation[]>(
+  //     kvKeys.lastVisitor,
+  //     kvKeys.currentVisitor,
+  //   )
+  //   lastVisitor = lv
+  //   await redis.set(kvKeys.lastVisitor, cv)
+  // }
+
+  // if (isDev) {
+  //   lastVisitor = {
+  //     country: 'US',
+  //     flag: '🇺🇸',
+  //   }
+  // }
   return (
     <div className="mt-12 space-y-3 text-center md:mt-6 md:text-left">
       <p>
@@ -98,6 +120,10 @@ const FooterBottom = () => {
           <Divider />
           <a href="/sitemap.xml">站点地图</a>
           <Divider className="hidden md:inline" />
+
+          <SubscribeTextButton>
+            <Divider className="inline" />
+          </SubscribeTextButton>
         </span>
         <span className="mt-3 block md:mt-0 md:inline">
           Stay hungry. Stay foolish.
@@ -114,9 +140,19 @@ const FooterBottom = () => {
           浙 ICP 备 20028356 号
         </StyledLink>
         <Divider />
-        <span>
-          <GatewayCount /> 个小伙伴正在浏览
-        </span>
+        <GatewayCount />
+        {/* {!!lastVisitor && (
+          <>
+            <Divider />
+            <span>
+              最近访客来自&nbsp;
+              {lastVisitor.flag}&nbsp;
+              {[lastVisitor.city, lastVisitor.country]
+                .filter(Boolean)
+                .join(', ')}
+            </span>
+          </>
+        )} */}
       </p>
     </div>
   )

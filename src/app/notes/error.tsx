@@ -1,20 +1,18 @@
+/* eslint-disable react/display-name */
 'use client'
 
 import { useEffect } from 'react'
+import { useParams } from 'next/navigation'
 
 import { captureException } from '@sentry/nextjs'
 
+import { NotFound404 } from '~/components/common/404'
 import { NotePasswordForm } from '~/components/widgets/note/NotePasswordForm'
+import { isRequestError, pickStatusCode } from '~/lib/is-error'
+import { setCurrentNoteId } from '~/providers/note/CurrentNoteIdProvider'
 
-import { Paper } from './Paper'
+import { Paper } from '../../components/layout/container/Paper'
 
-const isRequestError = (error: Error) => {
-  return error.message.startsWith(`Request failed with status code`)
-}
-
-const pickStatusCode = (error: Error) => {
-  return error.message.split(' ').pop()
-}
 // TODO Catch if 404 or 403
 export default ({ error, reset }: { error: Error; reset: () => void }) => {
   useEffect(() => {
@@ -27,17 +25,26 @@ export default ({ error, reset }: { error: Error; reset: () => void }) => {
     if (!code) {
       return null
     }
-    if (parseInt(code) === 403) {
+    if (code === 403) {
       return (
         <Paper>
           <NotePasswordForm />
+          <NoteSetCurrnetId />
+        </Paper>
+      )
+    }
+
+    if (code === 404 || code === 422) {
+      return (
+        <Paper className="flex flex-col items-center">
+          <NotFound404 />
         </Paper>
       )
     }
     return (
-      <div>
-        <h1>{code}</h1>
-      </div>
+      <Paper>
+        <h1 className="mt-20 text-center text-3xl font-medium">{code}</h1>
+      </Paper>
     )
   }
 
@@ -56,4 +63,12 @@ export default ({ error, reset }: { error: Error; reset: () => void }) => {
       </div>
     </Paper>
   )
+}
+
+const NoteSetCurrnetId = () => {
+  const { id } = useParams()
+  useEffect(() => {
+    setCurrentNoteId(id)
+  }, [id])
+  return null
 }

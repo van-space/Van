@@ -1,10 +1,12 @@
 import { atom, useAtomValue } from 'jotai'
 
+import { getToken, removeToken, setToken } from '~/lib/cookie'
+import { apiClient } from '~/lib/request'
 import { jotaiStore } from '~/lib/store'
 import { toast } from '~/lib/toast'
 import { aggregationDataAtom } from '~/providers/root/aggregation-data-provider'
-import { getToken, removeToken, setToken } from '~/utils/cookie'
-import { apiClient } from '~/utils/request'
+
+import { fetchAppUrl } from './url'
 
 const ownerAtom = atom((get) => {
   return get(aggregationDataAtom)?.user
@@ -23,10 +25,11 @@ export const login = async (username?: string, password?: string) => {
       setToken(token)
       jotaiStore.set(isLoggedAtom, true)
 
+      await fetchAppUrl()
       toast(`欢迎回来，${jotaiStore.get(ownerAtom)?.name}`, 'success')
     }
 
-    return Promise.resolve()
+    return true
   }
 
   const token = getToken()
@@ -46,14 +49,19 @@ export const login = async (username?: string, password?: string) => {
 
   if (!validated) {
     outdateToast()
+    removeToken()
     return
   }
 
-  apiClient.user.proxy.login.put<{ token: string }>().then((res) => {
+  await apiClient.user.proxy.login.put<{ token: string }>().then((res) => {
     jotaiStore.set(isLoggedAtom, true)
     toast(`欢迎回来，${jotaiStore.get(ownerAtom)?.name}`, 'success')
     setToken(res.token)
   })
+
+  return true
 }
 
 export const useIsLogged = () => useAtomValue(isLoggedAtom)
+
+export const isLogged = () => jotaiStore.get(isLoggedAtom)

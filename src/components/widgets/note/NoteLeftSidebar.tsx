@@ -1,18 +1,40 @@
+'use client'
+
+import { m } from 'framer-motion'
+
 import { OnlyDesktop } from '~/components/ui/viewport'
 
+import { useNoteMainContainerHeight } from './NoteMainContainer'
 import { NoteTimeline } from './NoteTimeline'
 import { NoteTopicInfo } from './NoteTopicInfo'
 
 export const NoteLeftSidebar: Component = ({ className }) => {
   return (
-    <div className={className}>
-      <OnlyDesktop>
-        <div className="sticky top-[120px] mt-[120px]">
+    <OnlyDesktop>
+      <AutoHeightOptimize className={className}>
+        <m.div
+          layoutRoot
+          layout
+          className="sticky top-[120px] mt-[120px] min-h-[300px]"
+        >
           <NoteTimeline />
 
           <NoteTopicInfo />
-        </div>
-      </OnlyDesktop>
+        </m.div>
+      </AutoHeightOptimize>
+    </OnlyDesktop>
+  )
+}
+
+const AutoHeightOptimize: Component = ({ children }) => {
+  const mainContainerHeight = useNoteMainContainerHeight()
+  return (
+    <div
+      style={{
+        height: mainContainerHeight ? `${mainContainerHeight}px` : 'auto',
+      }}
+    >
+      {children}
     </div>
   )
 }

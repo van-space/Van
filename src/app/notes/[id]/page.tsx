@@ -2,188 +2,113 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 'use client'
 
-import { memo, Suspense, useEffect } from 'react'
-import { Balancer } from 'react-wrap-balancer'
-import clsx from 'clsx'
-import dayjs from 'dayjs'
-import { useParams } from 'next/navigation'
-import type { Image, NoteModel } from '@mx-space/api-client'
-import type { MarkdownToJSX } from '~/components/ui/markdown'
+import { memo, useEffect } from 'react'
+import dynamic from 'next/dynamic'
 
 import { ClientOnly } from '~/components/common/ClientOnly'
-import { PageDataHolder } from '~/components/common/PageHolder'
-import { MdiClockOutline } from '~/components/icons/clock'
-import { useSetHeaderMetaInfo } from '~/components/layout/header/internal/hooks'
-import { FloatPopover } from '~/components/ui/float-popover'
-import { Loading } from '~/components/ui/loading'
-import { Markdown } from '~/components/ui/markdown'
-import { NoteFooterNavigationBarForMobile } from '~/components/widgets/note/NoteFooterNavigation'
-import { NoteTopic } from '~/components/widgets/note/NoteTopic'
-import { SubscribeBell } from '~/components/widgets/subscribe/SubscribeBell'
-import { TocAside, TocAutoScroll } from '~/components/widgets/toc'
+import { NoteBanner } from '~/components/widgets/note/NoteBanner'
+import { ArticleRightAside } from '~/components/widgets/shared/ArticleRightAside'
+import { BanCopyWrapper } from '~/components/widgets/shared/BanCopyWrapper'
+import { ReadIndicatorForMobile } from '~/components/widgets/shared/ReadIndicator'
 import { XLogInfoForNote, XLogSummaryForNote } from '~/components/widgets/xlog'
-import { useNoteByNidQuery, useNoteData } from '~/hooks/data/use-note'
-import { ArticleElementProvider } from '~/providers/article/article-element-provider'
-import { MarkdownImageRecordProvider } from '~/providers/article/markdown-image-record-provider'
-import {
-  CurrentNoteIdProvider,
-  useSetCurrentNoteId,
-} from '~/providers/note/current-note-id-provider'
-import { NoteLayoutRightSidePortal } from '~/providers/note/right-side-provider'
-import { parseDate } from '~/utils/datetime'
-import { springScrollToTop } from '~/utils/scroller'
+import { springScrollToTop } from '~/lib/scroller'
+import { useCurrentNoteId } from '~/providers/note/CurrentNoteIdProvider'
+import { LayoutRightSidePortal } from '~/providers/shared/LayoutRightSideProvider'
+import { WrappedElementProvider } from '~/providers/shared/WrappedElementProvider'
 
-import { ReadIndicator } from '../../../components/common/ReadIndicator'
-import { NoteActionAside } from '../../../components/widgets/note/NoteActionAside'
 import { NoteHideIfSecret } from '../../../components/widgets/note/NoteHideIfSecret'
 import { NoteMetaBar } from '../../../components/widgets/note/NoteMetaBar'
-import styles from './page.module.css'
+import {
+  IndentArticleContainer,
+  NoteHeaderDate,
+  NoteHeaderMetaInfoSetting,
+  NoteMarkdown,
+  NoteMarkdownImageRecordProvider,
+  NoteTitle,
+} from './pageExtra'
 
-const noopArr = [] as Image[]
+const NoteActionAside = dynamic(() =>
+  import('~/components/widgets/note/NoteActionAside').then(
+    (mod) => mod.NoteActionAside,
+  ),
+)
+
+const NoteFooterNavigationBarForMobile = dynamic(() =>
+  import('~/components/widgets/note/NoteFooterNavigation').then(
+    (mod) => mod.NoteFooterNavigationBarForMobile,
+  ),
+)
+
+const NoteTopic = dynamic(() =>
+  import('~/components/widgets/note/NoteTopic').then((mod) => mod.NoteTopic),
+)
+
+const SubscribeBell = dynamic(() =>
+  import('~/components/widgets/subscribe/SubscribeBell').then(
+    (mod) => mod.SubscribeBell,
+  ),
+)
 
 const PageImpl = () => {
-  const { id } = useParams() as { id: string }
-  const { data } = useNoteByNidQuery(id)
-
-  // Why do this, I mean why do set NoteId to context, don't use `useParams().id` for children components.
-  // Because any router params or query changes, will cause components that use `useParams()` hook, this hook is a context hook,
-  // For example, `ComA` use `useParams()` just want to get value `id`,
-  // but if router params or query changes `page` params, will cause `CompA` re - render.
-  const setNoteId = useSetCurrentNoteId()
-  useEffect(() => {
-    setNoteId(id)
-  }, [id])
-
-  const note = data?.data
-  const setHeaderMetaInfo = useSetHeaderMetaInfo()
-  useEffect(() => {
-    if (!note?.title) return
-    setHeaderMetaInfo({
-      title: note?.title,
-      description: `手记${note.topic?.name ? ` / ${note.topic?.name}` : ''}`,
-      slug: note?.nid.toString(),
-    })
-  }, [note?.nid, note?.title, note?.topic?.name])
-
-  if (!note) {
-    return <Loading useDefaultLoadingText />
-  }
-
   return (
-    <CurrentNoteIdProvider initialNoteId={id}>
-      <NotePage note={note} />
-    </CurrentNoteIdProvider>
+    <>
+      <NotePage />
+      <NoteHeaderMetaInfoSetting />
+    </>
   )
 }
 
-const NotePage = memo(({ note }: { note: NoteModel }) => {
-  const tips = `创建于 ${parseDate(note.created, 'YYYY 年 M 月 D 日 dddd')}${
-    note.modified
-      ? `，修改于 ${parseDate(note.modified, 'YYYY 年 M 月 D 日 dddd')}`
-      : ''
-  }`
+const NotePage = memo(function Notepage() {
+  const noteId = useCurrentNoteId()
+
+  useEffect(() => {
+    springScrollToTop()
+  }, [noteId])
+
+  if (!noteId) return null
 
   return (
-    <Suspense>
-      <article
-        className={clsx(
-          'prose relative',
-          styles['with-indent'],
-          styles['with-serif'],
-        )}
-      >
+    <>
+      <IndentArticleContainer>
         <header>
           <NoteTitle />
           <span className="flex flex-wrap items-center text-[13px] text-neutral-content/60">
-            <FloatPopover as="span" TriggerComponent={NoteDateMeta}>
-              {tips}
-            </FloatPopover>
+            <NoteHeaderDate />
 
             <ClientOnly>
               <NoteMetaBar />
             </ClientOnly>
           </span>
+          <div className="ml-[-1.25em] mr-[-1.25em] mt-8 text-sm lg:ml-[calc(-3em)] lg:mr-[calc(-3em)]">
+            <NoteBanner />
+          </div>
         </header>
 
         <NoteHideIfSecret>
           <XLogSummaryForNote />
-          <ArticleElementProvider>
-            <MarkdownImageRecordProvider images={note.images || noopArr}>
-              <Markdown
-                as="main"
-                renderers={MarkdownRenderers}
-                value={note.text}
-              />
-            </MarkdownImageRecordProvider>
+          <WrappedElementProvider>
+            <ReadIndicatorForMobile />
+            <NoteMarkdownImageRecordProvider>
+              <BanCopyWrapper>
+                <NoteMarkdown />
+              </BanCopyWrapper>
+            </NoteMarkdownImageRecordProvider>
 
-            <NoteLayoutRightSidePortal>
-              <TocAside
-                className="sticky top-[120px] ml-4 mt-[120px]"
-                treeClassName="max-h-[calc(100vh-6rem-4.5rem-300px)] h-[calc(100vh-6rem-4.5rem-300px)] min-h-[120px] relative"
-                accessory={ReadIndicator}
-              >
-                <NoteActionAside className="translate-y-full" />
-              </TocAside>
-              <TocAutoScroll />
-            </NoteLayoutRightSidePortal>
-          </ArticleElementProvider>
+            <LayoutRightSidePortal>
+              <ArticleRightAside>
+                <NoteActionAside />
+              </ArticleRightAside>
+            </LayoutRightSidePortal>
+          </WrappedElementProvider>
         </NoteHideIfSecret>
-      </article>
+      </IndentArticleContainer>
 
       <SubscribeBell defaultType="note_c" />
-      <NoteTopic topic={note.topic} />
+      <NoteTopic />
       <XLogInfoForNote />
-      <NoteFooterNavigationBarForMobile noteId={note.nid.toString()} />
-    </Suspense>
+      <NoteFooterNavigationBarForMobile />
+    </>
   )
 })
 
-const NoteTitle = () => {
-  const note = useNoteData()
-  if (!note) return null
-  const title = note.title
-  return (
-    <h1 className="mt-8 text-left font-bold text-base-content/95">
-      <Balancer>{title}</Balancer>
-    </h1>
-  )
-}
-
-const NoteDateMeta = () => {
-  const note = useNoteData()
-  if (!note) return null
-
-  const dateFormat = dayjs(note.created)
-    .locale('zh-cn')
-    .format('YYYY 年 M 月 D 日 dddd')
-
-  return (
-    <span className="inline-flex items-center space-x-1">
-      <MdiClockOutline />
-      <time className="font-medium" suppressHydrationWarning>
-        {dateFormat}
-      </time>
-    </span>
-  )
-}
-
-const MarkdownRenderers: { [name: string]: Partial<MarkdownToJSX.Rule> } = {
-  text: {
-    react(node, _, state) {
-      return (
-        <span className="indent" key={state?.key}>
-          {node.content}
-        </span>
-      )
-    },
-  },
-}
-
-export default PageDataHolder(PageImpl, () => {
-  const { id } = useParams() as { id: string }
-
-  useEffect(() => {
-    springScrollToTop()
-  }, [id])
-  return useNoteByNidQuery(id)
-})
+export default PageImpl

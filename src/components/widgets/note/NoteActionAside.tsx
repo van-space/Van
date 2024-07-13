@@ -1,59 +1,52 @@
 'use client'
 
-import { useQueryClient } from '@tanstack/react-query'
-import { motion, useAnimationControls, useForceUpdate } from 'framer-motion'
-import { produce } from 'immer'
-import type { NoteWrappedPayload } from '@mx-space/api-client'
+import { m, useAnimationControls, useForceUpdate } from 'framer-motion'
 
 import { MotionButtonBase } from '~/components/ui/button'
 import { useIsClient } from '~/hooks/common/use-is-client'
-import { useNoteData } from '~/hooks/data/use-note'
+import { isLikedBefore, setLikeId } from '~/lib/cookie'
+import { clsxm } from '~/lib/helper'
+import { apiClient } from '~/lib/request'
 import { routeBuilder, Routes } from '~/lib/route-builder'
 import { toast } from '~/lib/toast'
 import { urlBuilder } from '~/lib/url-builder'
-import { useAggregationData } from '~/providers/root/aggregation-data-provider'
-import { queries } from '~/queries/definition'
-import { isLikedBefore, setLikeId } from '~/utils/cookie'
-import { clsxm } from '~/utils/helper'
-import { apiClient } from '~/utils/request'
+import {
+  getCurrentNoteData,
+  setCurrentNoteData,
+  useCurrentNoteDataSelector,
+} from '~/providers/note/CurrentNoteDataProvider'
+import { useCurrentNoteId } from '~/providers/note/CurrentNoteIdProvider'
+import { useModalStack } from '~/providers/root/modal-stack-provider'
 
+import { ActionAsideContainer } from '../shared/ActionAsideContainer'
 import { DonateButton } from '../shared/DonateButton'
+import { ShareModal } from '../shared/ShareModal'
 
 export const NoteActionAside: Component = ({ className }) => {
   return (
-    <div
-      className={clsxm(
-        'absolute bottom-0 left-0 max-h-[300px] flex-col space-y-8',
-        className,
-      )}
-    >
+    <ActionAsideContainer className={className}>
       <LikeButton />
       <ShareButton />
       <DonateButton />
-    </div>
+    </ActionAsideContainer>
   )
 }
 
 const LikeButton = () => {
-  const note = useNoteData()
-
-  const queryClient = useQueryClient()
   const control = useAnimationControls()
   const [update] = useForceUpdate()
-  if (!note) return null
-  const id = note.id
+
+  const id = useCurrentNoteDataSelector((data) => data?.data.id)
+  const nid = useCurrentNoteId()
+  if (!id) return null
   const handleLike = () => {
     if (isLikedBefore(id)) return
+    if (!nid) return
     apiClient.note.likeIt(id).then(() => {
       setLikeId(id)
-      queryClient.setQueriesData(
-        queries.note.byNid(note.nid.toString()),
-        (old: any) => {
-          return produce(old as NoteWrappedPayload, (draft) => {
-            draft.data.count.like += 1
-          })
-        },
-      )
+      setCurrentNoteData((draft) => {
+        draft.data.count.like += 1
+      })
       update()
     })
   }
@@ -62,6 +55,7 @@ const LikeButton = () => {
 
   return (
     <MotionButtonBase
+      aria-label="Like This Note Button"
       className="flex flex-col space-y-2"
       onClick={() => {
         handleLike()
@@ -70,7 +64,7 @@ const LikeButton = () => {
         })
         toast('谢谢你！', undefined, {
           iconElement: (
-            <motion.i
+            <m.i
               className="icon-[mingcute--heart-fill] text-uk-red-light"
               initial={{
                 scale: 0.96,
@@ -89,11 +83,11 @@ const LikeButton = () => {
         })
       }}
     >
-      <motion.i
+      <m.i
         className={clsxm(
-          'icon-[mingcute--heart-fill] text-[24px] opacity-80 duration-200 hover:text-uk-red-light hover:opacity-100',
-
-          isLiked && 'text-uk-red-light',
+          'text-[24px] opacity-80 duration-200 hover:text-uk-red-light hover:opacity-100',
+          !isLiked && 'icon-[mingcute--heart-line]',
+          isLiked && 'icon-[mingcute--heart-fill] text-uk-red-light',
         )}
         animate={control}
         variants={{
@@ -110,33 +104,46 @@ const LikeButton = () => {
 }
 
 const ShareButton = () => {
-  const hasShare = 'share' in navigator
   const isClient = useIsClient()
-  const note = useNoteData()
-  const aggregation = useAggregationData()
-  if (!isClient) return null
-  if (!note) return null
+  const { present } = useModalStack()
 
-  if (!hasShare) {
-    return null
-  }
-  if (!aggregation) return null
+  if (!isClient) return null
+
   return (
     <MotionButtonBase
+      aria-label="Share This Note Button"
       className="flex flex-col space-y-2"
       onClick={() => {
-        navigator.share({
-          title: note.title,
-          text: note.text,
-          url: urlBuilder(
-            routeBuilder(Routes.Note, {
-              id: note.nid.toString(),
-            }),
-          ).href,
-        })
+        const note = getCurrentNoteData()?.data
+
+        if (!note) return
+
+        const hasShare = 'share' in navigator
+
+        const title = '分享一片宝藏文章'
+        const url = urlBuilder(
+          routeBuilder(Routes.Note, {
+            id: note.nid.toString(),
+          }),
+        ).href
+
+        const text = `嘿，我发现了一片宝藏文章「${note.title}」哩，快来看看吧！${url}`
+
+        if (hasShare)
+          navigator.share({
+            title: note.title,
+            text: note.text,
+            url,
+          })
+        else {
+          present({
+            title: '分享此内容',
+            content: () => <ShareModal text={text} title={title} url={url} />,
+          })
+        }
       }}
     >
-      <i className="icon-[mingcute--share-forward-fill] text-[24px] opacity-80 duration-200 hover:text-uk-cyan-light hover:opacity-100" />
+      <i className="icon-[mingcute--share-forward-line] text-[24px] opacity-80 duration-200 hover:text-uk-cyan-light hover:opacity-100" />
     </MotionButtonBase>
   )
 }

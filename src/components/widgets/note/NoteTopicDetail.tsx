@@ -11,9 +11,9 @@ import { Divider, DividerVertical } from '~/components/ui/divider'
 import { Loading } from '~/components/ui/loading'
 import { RelativeTime } from '~/components/ui/relative-time'
 import { useIsClient } from '~/hooks/common/use-is-client'
-import { useNoteData } from '~/hooks/data/use-note'
+import { apiClient } from '~/lib/request'
 import { routeBuilder, Routes } from '~/lib/route-builder'
-import { apiClient } from '~/utils/request'
+import { useCurrentNoteDataSelector } from '~/providers/note/CurrentNoteDataProvider'
 
 import { NoteTopicMarkdownRender } from './NoteTopicMarkdownRender'
 
@@ -105,16 +105,16 @@ export const NoteTopicDetail: FC<{ topic: TopicModel }> = (props) => {
 }
 
 export const ToTopicLink: FC = () => {
-  const note = useNoteData()
-  if (!note?.topic) return null
+  const topic = useCurrentNoteDataSelector((data) => data?.data.topic)
+  if (!topic) return null
   return (
     <Link
       href={routeBuilder(Routes.NoteTopic, {
-        slug: note.topic.slug,
+        slug: topic.slug,
       })}
     >
       <span className="flex-grow truncate opacity-80 hover:opacity-100">
-        {note.topic.name}
+        {topic.name}
       </span>
     </Link>
   )

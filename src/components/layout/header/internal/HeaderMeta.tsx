@@ -1,6 +1,6 @@
 'use client'
 
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, m } from 'framer-motion'
 
 import { microReboundPreset } from '~/constants/spring'
 import { useAggregationSelector } from '~/providers/root/aggregation-data-provider'
@@ -34,27 +34,32 @@ export const HeaderMeta = () => {
   return (
     <AnimatePresence>
       {show && (
-        <motion.div
+        <m.div
           className="absolute inset-0 flex min-w-0 items-center justify-between px-0 lg:px-[4rem]"
           data-testid="header-meta"
           {...animationProps}
         >
           <div className="align-center flex min-w-0 flex-shrink flex-grow flex-col">
             <small className="min-w-0 truncate">
-              <span className="text-gray-500">{description}</span>
+              <span className="text-gray-600/60 dark:text-gray-300/60">
+                {description}
+              </span>
             </small>
             <h2 className="min-w-0 truncate text-[1.2rem] font-medium leading-[1.5]">
               {title}
             </h2>
           </div>
 
-          <div className="hidden min-w-0 flex-shrink-0 flex-col text-right leading-5 lg:flex">
-            <span className="whitespace-pre text-base-content"> {slug}</span>
-            <span className="font-medium text-gray-400 dark:text-gray-600">
+          <div className="hidden min-w-0 flex-shrink flex-col text-right leading-5 lg:flex">
+            <small className="min-w-0 truncate whitespace-pre text-gray-600/60 dark:text-gray-300/60">
+              {' '}
+              {slug}
+            </small>
+            <span className="font-medium text-gray-600 dark:text-gray-300">
               {seoTitle}
             </span>
           </div>
-        </motion.div>
+        </m.div>
       )}
     </AnimatePresence>
   )

@@ -1,13 +1,16 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { Fragment, memo, useMemo, useRef } from 'react'
+import React, { Fragment, memo, Suspense, useMemo, useRef } from 'react'
 import { clsx } from 'clsx'
 import { compiler, sanitizeUrl } from 'markdown-to-jsx'
+import dynamic from 'next/dynamic'
+import Script from 'next/script'
 import type { MarkdownToJSX } from 'markdown-to-jsx'
 import type { FC, PropsWithChildren } from 'react'
 
-import { useElementSize } from '~/providers/article/article-element-provider'
-import { isDev } from '~/utils/env'
-import { springScrollToElement } from '~/utils/scroller'
+import { MAIN_MARKDOWN_ID } from '~/constants/dom-id'
+import { isDev } from '~/lib/env'
+import { springScrollToElement } from '~/lib/scroller'
+import { useWrappedElementSize } from '~/providers/shared/WrappedElementProvider'
 
 import { Gallery } from '../gallery'
 import { FixedZoomedImage } from '../image'
@@ -23,7 +26,10 @@ import { SpoilderRule } from './parsers/spoiler'
 import { MParagraph, MTableBody, MTableHead, MTableRow } from './renderers'
 import { MDetails } from './renderers/collapse'
 import { MFootNote } from './renderers/footnotes'
+import { MHeader } from './renderers/heading'
 import { MLink } from './renderers/link'
+
+const CodeBlock = dynamic(() => import('~/components/widgets/shared/CodeBlock'))
 
 export interface MdProps {
   value?: string
@@ -37,6 +43,8 @@ export interface MdProps {
   codeBlockFully?: boolean
   className?: string
   as?: React.ElementType
+
+  allowsScript?: boolean
 }
 
 export const Markdown: FC<MdProps & MarkdownToJSX.Options & PropsWithChildren> =
@@ -52,7 +60,7 @@ export const Markdown: FC<MdProps & MarkdownToJSX.Options & PropsWithChildren> =
       extendsRules,
       additionalParserRules,
       as: As = 'div',
-
+      allowsScript = false,
       ...rest
     } = props
 
@@ -78,10 +86,20 @@ export const Markdown: FC<MdProps & MarkdownToJSX.Options & PropsWithChildren> =
           // for custom react component
           LinkCard,
           Gallery,
+          script: allowsScript ? Script : undefined,
           ...overrides,
         },
 
         extendsRules: {
+          heading: {
+            react(node, output, state) {
+              return (
+                <MHeader id={node.id} level={node.level} key={state?.key}>
+                  {output(node.content, state!)}
+                </MHeader>
+              )
+            },
+          },
           gfmTask: {
             react(node, _, state) {
               return (
@@ -151,17 +169,17 @@ export const Markdown: FC<MdProps & MarkdownToJSX.Options & PropsWithChildren> =
               )
             },
           },
-          // codeBlock: {
-          //   react(node, output, state) {
-          //     return (
-          //       <CodeBlock
-          //         key={state?.key}
-          //         content={node.content}
-          //         lang={node.lang}
-          //       />
-          //     )
-          //   },
-          // },
+          codeBlock: {
+            react(node, output, state) {
+              return (
+                <CodeBlock
+                  key={state?.key}
+                  content={node.content}
+                  lang={node.lang}
+                />
+              )
+            },
+          },
 
           list: {
             react(node, output, state) {
@@ -215,26 +233,30 @@ export const Markdown: FC<MdProps & MarkdownToJSX.Options & PropsWithChildren> =
     ])
 
     return (
-      <As
-        style={style}
-        {...wrapperProps}
-        ref={ref}
-        className={clsx(
-          styles['md'],
-          codeBlockFully ? styles['code-fully'] : undefined,
-          className,
-        )}
-      >
-        {node}
-      </As>
+      <Suspense>
+        <As
+          id={MAIN_MARKDOWN_ID}
+          style={style}
+          {...wrapperProps}
+          ref={ref}
+          className={clsx(
+            styles['md'],
+            codeBlockFully ? styles['code-fully'] : undefined,
+            className,
+          )}
+        >
+          {node}
+        </As>
+      </Suspense>
     )
   })
+Markdown.displayName = 'Markdown'
 
 const MarkdownImage = (props: any) => {
   const nextProps = {
     ...props,
   }
   nextProps.alt = props.alt?.replace(/^[¡!]/, '')
-  const { w } = useElementSize()
+  const { w } = useWrappedElementSize()
   return <FixedZoomedImage {...nextProps} containerWidth={w} />
 }

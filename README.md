@@ -1,38 +1,39 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Shiro
 
-## Getting Started
+A minimalist personal website embodying the purity of paper and freshness of snow.
 
-First, run the development server:
+A theme for [Mix Space](https://github.com/mx-space)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+## 动机
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Kami 的代码已经超过 3 年，实在变得难以维护，一堆屎一样的代码。自己看了都感到恶心。其次是太多的 Hydration Error 看着心烦，换个风格也挺好。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+本次重写不仅在风格上的不同，在代码层面上也更加符合 React 哲学，使用了非常牛逼的 Jotai 作为状态管理，🍞老师果然说的没错，Jotai yyds。
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+几乎重写了 80% 的原代码，覆盖了几个主要页面。
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Status
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+**WIP**
 
-## Learn More
+## 设计细节
 
-To learn more about Next.js, take a look at the following resources:
+### 本站依旧接入了 WebSocket 连接，通知和更新当前的活动。
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- 发布文章站内通知
+- 文章的实时修改，实时反映
+- 实时评论 WIP
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### 头部
 
-## Deploy on Vercel
+- 4 种不同的状态
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### FAB
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+对移动端进行了优化，调整了尺寸为了更好的点击。
+
+## License
+
+2023 © Innei, Released under the MIT License. Thanks GPT-4 & [cali.so](https://github.com/CaliCastle/cali.so)
+
+> [Personal Website](https://innei.in/) · GitHub [@Innei](https://github.com/innei/)

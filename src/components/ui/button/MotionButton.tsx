@@ -1,8 +1,8 @@
-import { forwardRef, memo } from 'react'
-import { motion } from 'framer-motion'
-import type { ForwardRefComponent, HTMLMotionProps } from 'framer-motion'
+'use client'
 
-import { microReboundPreset } from '~/constants/spring'
+import { forwardRef, memo } from 'react'
+import { m } from 'framer-motion'
+import type { ForwardRefComponent, HTMLMotionProps } from 'framer-motion'
 
 export const MotionButtonBase: ForwardRefComponent<
   HTMLButtonElement,
@@ -10,17 +10,16 @@ export const MotionButtonBase: ForwardRefComponent<
 > = memo(
   forwardRef(({ children, ...rest }, ref) => {
     return (
-      <motion.button
+      <m.button
         initial={true}
-        whileFocus={{ scale: 1.05 }}
-        whileHover={{ scale: 1.05 }}
+        whileFocus={{ scale: 1.02 }}
+        whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.95 }}
-        transition={{ ...microReboundPreset }}
         {...rest}
         ref={ref}
       >
         {children}
-      </motion.button>
+      </m.button>
     )
   }),
 )

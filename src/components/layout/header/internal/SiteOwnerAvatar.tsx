@@ -1,22 +1,60 @@
 'use client'
 
+import { useQuery } from '@tanstack/react-query'
+import { useCallback } from 'react'
 import Image from 'next/image'
 
+import { clsxm } from '~/lib/helper'
 import { useAggregationSelector } from '~/providers/root/aggregation-data-provider'
-import { clsxm } from '~/utils/helper'
 
 export const SiteOwnerAvatar: Component = ({ className }) => {
   const avatar = useAggregationSelector((data) => data.user.avatar)
 
+  const { data: isLiving } = useQuery({
+    queryKey: ['live-check'],
+    queryFn: () =>
+      fetch('/api/bilibili/check_live')
+        .then((res) => res.json())
+        .catch(() => null),
+    select: useCallback((data: any) => {
+      return !!data
+    }, []),
+    refetchInterval: 1000 * 60,
+    meta: {
+      persist: false,
+    },
+  })
+
   if (!avatar) return
   return (
     <div
+      role={isLiving ? 'button' : 'img'}
       className={clsxm(
-        'overflow-hidden rounded-md border-[1.5px] border-slate-300 dark:border-neutral-800',
+        'overflow pointer-events-none relative z-[9] select-none',
+
+        isLiving ? 'cursor-pointer rounded-full' : '',
         className,
       )}
     >
-      <Image src={avatar} alt="Site Owner Avatar" width={25} height={25} />
+      <Image
+        src={avatar}
+        alt="Site Owner Avatar"
+        width={40}
+        height={40}
+        className={clsxm(
+          'rounded-md ring-2 ring-slate-200 dark:ring-neutral-800',
+          isLiving ? 'rounded-full' : '',
+        )}
+      />
+      {isLiving && (
+        <>
+          <p className="absolute bottom-0 right-0 z-[1] rounded-md bg-red-400 p-1 font-[system-ui] text-[8px] dark:bg-orange-700">
+            LIVE
+          </p>
+
+          <div className="absolute inset-0 scale-100 animate-ping rounded-full ring-2 ring-red-500/80" />
+        </>
+      )}
     </div>
   )
 }

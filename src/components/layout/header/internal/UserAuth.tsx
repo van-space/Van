@@ -2,25 +2,31 @@
 
 import React from 'react'
 import { AnimatePresence } from 'framer-motion'
+import dynamic from 'next/dynamic'
 import { usePathname } from 'next/navigation'
 
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  UserButton,
-  useUser,
-} from '@clerk/nextjs'
-
-import { GitHubBrandIcon } from '~/components/icons/platform/GitHubBrandIcon'
-import { GoogleBrandIcon } from '~/components/icons/platform/GoogleBrandIcon'
-import { MailIcon } from '~/components/icons/platform/MailIcon'
 import { UserArrowLeftIcon } from '~/components/icons/user-arrow-left'
 import { FloatPopover } from '~/components/ui/float-popover'
 import { urlBuilder } from '~/lib/url-builder'
-import { clsxm } from '~/utils/helper'
 
 import { HeaderActionButton } from './HeaderActionButton'
+
+const UserAuthFromIcon = dynamic(() =>
+  import('./UserAuthFromIcon').then((mod) => mod.UserAuthFromIcon),
+)
+
+const SignedIn = dynamic(() =>
+  import('@clerk/nextjs').then((mod) => mod.SignedIn),
+)
+const SignedOut = dynamic(() =>
+  import('@clerk/nextjs').then((mod) => mod.SignedOut),
+)
+const UserButton = dynamic(() =>
+  import('@clerk/nextjs').then((mod) => mod.UserButton),
+)
+const SignInButton = dynamic(() =>
+  import('@clerk/nextjs').then((mod) => mod.SignInButton),
+)
 
 export function UserAuth() {
   const pathname = usePathname()
@@ -45,47 +51,13 @@ export function UserAuth() {
       <SignedOut key="sign-in">
         <FloatPopover
           TriggerComponent={TriggerComponent}
-          wrapperClassNames="h-full w-full flex items-center justify-center"
+          wrapperClassName="h-full w-full flex items-center justify-center"
           type="tooltip"
         >
-          登陆
+          登录
         </FloatPopover>
       </SignedOut>
     </AnimatePresence>
-  )
-}
-
-const UserAuthFromIcon: Component = ({ className }) => {
-  const { user } = useUser()
-  const StrategyIcon = React.useMemo(() => {
-    const strategy = user?.primaryEmailAddress?.verification.strategy
-    if (!strategy) {
-      return null
-    }
-
-    switch (strategy) {
-      case 'from_oauth_github':
-        return GitHubBrandIcon
-      case 'from_oauth_google':
-        return GoogleBrandIcon
-      default:
-        return MailIcon
-    }
-  }, [user?.primaryEmailAddress?.verification.strategy])
-
-  if (!StrategyIcon) {
-    return null
-  }
-
-  return (
-    <span
-      className={clsxm(
-        'pointer-events-none flex h-4 w-4 select-none items-center justify-center rounded-full bg-white dark:bg-zinc-900',
-        className,
-      )}
-    >
-      <StrategyIcon className="h-3 w-3" />
-    </span>
   )
 }
 
@@ -93,7 +65,7 @@ const TriggerComponent = () => {
   const pathname = usePathname()
   return (
     <SignInButton mode="modal" redirectUrl={urlBuilder(pathname).href}>
-      <HeaderActionButton>
+      <HeaderActionButton aria-label="Guest Login">
         <UserArrowLeftIcon className="h-4 w-4" />
       </HeaderActionButton>
     </SignInButton>

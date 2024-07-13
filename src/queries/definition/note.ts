@@ -1,14 +1,14 @@
 import dayjs from 'dayjs'
 import type { NoteWrappedPayload } from '@mx-space/api-client'
 
+import { apiClient } from '~/lib/request'
 import { routeBuilder, Routes } from '~/lib/route-builder'
-import { apiClient } from '~/utils/request'
 
-import { defineQuery } from './helper'
+import { defineQuery } from '../helper'
 
 const LATEST_KEY = 'latest'
 export const note = {
-  byNid: (nid: string, password?: string) =>
+  byNid: (nid: string, password?: string | null) =>
     defineQuery({
       queryKey: ['note', nid],
       meta: {
@@ -29,7 +29,7 @@ export const note = {
         }
         const data = await apiClient.note.getNoteById(+queryKey[1], password!)
 
-        return { ...data }
+        return { ...data } as NoteWrappedPayload
       },
     }),
 }

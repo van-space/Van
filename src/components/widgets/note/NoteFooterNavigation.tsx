@@ -2,38 +2,35 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import type { FC } from 'react'
 
-import {
-  IcRoundKeyboardDoubleArrowLeft,
-  IcRoundKeyboardDoubleArrowRight,
-} from '~/components/icons/arrow'
 import { MdiClockTimeThreeOutline } from '~/components/icons/clock'
-import { Divider } from '~/components/ui/divider'
 import { OnlyMobile } from '~/components/ui/viewport/OnlyMobile'
-import { useNoteByNidQuery } from '~/hooks/data/use-note'
 import { routeBuilder, Routes } from '~/lib/route-builder'
-import { springScrollToTop } from '~/utils/scroller'
+import { springScrollToTop } from '~/lib/scroller'
+import { useCurrentNoteDataSelector } from '~/providers/note/CurrentNoteDataProvider'
 
-export const NoteFooterNavigation: FC<{ noteId: string }> = ({
-  noteId: id,
-}) => {
-  const { data } = useNoteByNidQuery(id)
+export const NoteFooterNavigation = () => {
+  const data = useCurrentNoteDataSelector((data) =>
+    !data
+      ? null
+      : {
+          nextNid: data.next?.nid,
+          prevNid: data.prev?.nid,
+          currentObjectId: data.data.id,
+        },
+  )
 
   const router = useRouter()
 
   if (!data) return null
 
-  const { prev, next } = data
-  const prevNid = prev?.nid
-  const nextNid = next?.nid
+  const { nextNid, prevNid, currentObjectId } = data
 
   return (
     <>
       {/* // 没有 0 的情况 */}
       {(!!prevNid || !!nextNid) && (
         <>
-          <Divider className="!w-15 m-auto" />
           <section className="relative mt-4 py-2 text-center" data-hide-print>
             <div className="flex items-center justify-between [&>*]:inline-flex [&>*]:items-center [&>*]:space-x-2 [&>*]:px-2 [&>*]:py-2">
               {!!nextNid && (
@@ -41,11 +38,11 @@ export const NoteFooterNavigation: FC<{ noteId: string }> = ({
                   href={routeBuilder(Routes.Note, {
                     id: nextNid.toString(),
                   })}
-                  className="hover:text-primary"
+                  className="hover:text-accent"
                   scroll={false}
                   prefetch={false}
                 >
-                  <IcRoundKeyboardDoubleArrowLeft />
+                  <i className="icon-[mingcute--arrow-left-line]" />
                   <span>前一篇</span>
                 </Link>
               )}
@@ -57,23 +54,23 @@ export const NoteFooterNavigation: FC<{ noteId: string }> = ({
                   })}
                   prefetch={false}
                   scroll={false}
-                  className="hover:text-primary"
+                  className="hover:text-accent"
                 >
                   <span>后一篇</span>
-                  <IcRoundKeyboardDoubleArrowRight />
+                  <i className="icon-[mingcute--arrow-right-line]" />
                 </Link>
               )}
             </div>
             <div
               tabIndex={1}
               role="button"
-              className="absolute bottom-0 left-1/2 top-0 flex -translate-x-1/2 transform items-center space-x-2 text-accent opacity-80 hover:text-primary"
+              className="absolute bottom-0 left-1/2 top-0 flex -translate-x-1/2 transform items-center space-x-2 text-accent opacity-80 hover:text-accent"
               onClick={() => {
                 springScrollToTop()
                 router.push(
                   routeBuilder(Routes.Timelime, {
                     type: 'note',
-                    selectId: id,
+                    selectId: currentObjectId,
                   }),
                 )
               }}
@@ -88,12 +85,11 @@ export const NoteFooterNavigation: FC<{ noteId: string }> = ({
   )
 }
 
-export const NoteFooterNavigationBarForMobile: typeof NoteFooterNavigation = (
-  props,
-) => {
-  return (
-    <OnlyMobile>
-      <NoteFooterNavigation {...props} />
-    </OnlyMobile>
-  )
-}
+export const NoteFooterNavigationBarForMobile: typeof NoteFooterNavigation =
+  () => {
+    return (
+      <OnlyMobile>
+        <NoteFooterNavigation />
+      </OnlyMobile>
+    )
+  }

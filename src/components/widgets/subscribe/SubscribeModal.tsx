@@ -1,13 +1,14 @@
-import { useEffect, useReducer } from 'react'
+import React, { useEffect, useReducer } from 'react'
 import type { SubscribeTypeToBitMap } from '@mx-space/api-client'
 import type { FC } from 'react'
 
 import { StyledButton } from '~/components/ui/button'
 import { Input } from '~/components/ui/input/Input'
 import { useStateToRef } from '~/hooks/common/use-state-ref'
+import { preventDefault } from '~/lib/dom'
+import { apiClient } from '~/lib/request'
 import { toast } from '~/lib/toast'
-import { useAggregationData } from '~/providers/root/aggregation-data-provider'
-import { apiClient } from '~/utils/request'
+import { useAggregationSelector } from '~/providers/root/aggregation-data-provider'
 
 import { useSubscribeStatusQuery } from './hooks'
 
@@ -82,7 +83,8 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({
 
   const query = useSubscribeStatusQuery()
 
-  const handleSubList = async () => {
+  const handleSubList: React.EventHandler<any> = async (e) => {
+    preventDefault(e)
     const { email, types } = state
     await apiClient.subscribe.subscribe(
       email,
@@ -94,13 +96,10 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({
     dispatch({ type: 'reset' })
     onConfirm()
   }
-  const aggregation = useAggregationData()
-  if (!aggregation) return null
-  const {
-    seo: { title },
-  } = aggregation
+  const title = useAggregationSelector((data) => data.seo.title)
+
   return (
-    <form action="#" onSubmit={handleSubList} className="flex flex-col gap-5">
+    <form onSubmit={handleSubList} className="flex flex-col gap-5">
       <p className="text-gray-1 text-sm">
         欢迎订阅「{title}
         」，我会定期推送最新的内容到你的邮箱。
@@ -114,16 +113,16 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({
           dispatch({ type: 'set', data: { email: e.target.value } })
         }}
       />
-      <div className="flex gap-10">
+      <div className="mb-2 flex gap-10">
         {Object.keys(state.types)
           .filter((type) => query.data?.allowTypes.includes(type as any))
           .map((name) => (
             <fieldset
-              className="children:cursor-pointer inline-flex items-center text-lg"
+              className="children:cursor-pointer inline-flex items-center text-sm"
               key={name}
             >
               <input
-                className="checkbox-accent checkbox mr-2"
+                className="checkbox-accent checkbox checkbox-sm mr-2"
                 type="checkbox"
                 onChange={(e) => {
                   dispatch({

@@ -4,16 +4,17 @@ import NextBundleAnalyzer from '@next/bundle-analyzer'
 import { withSentryConfig } from '@sentry/nextjs'
 import { sentryWebpackPlugin } from '@sentry/webpack-plugin'
 
-process.title = 'Springtide (NextJS)'
+process.title = 'Shiro (NextJS)'
 
 const env = config().parsed || {}
 const isProd = process.env.NODE_ENV === 'production'
 
-/**
- * @type {import('next').nextConfig}
- */
+/** @type {import('next').NextConfig} */
 // eslint-disable-next-line import/no-mutable-exports
 let nextConfig = {
+  compiler: {
+    // reactRemoveProperties: { properties: ['^data-id$', '^data-(\\w+)-id$'] },
+  },
   experimental: {
     appDir: true,
   },
@@ -46,7 +47,7 @@ let nextConfig = {
           org: 'inneis-site',
 
           project: 'springtide',
-          authToken: process.env.NEXT_PUBLIC_SENTRY_AUTH_TOKEN,
+          authToken: process.env.SENTRY_AUTH_TOKEN,
         }),
       )
     }
@@ -67,7 +68,7 @@ if (env.SENTRY === 'true' && isProd) {
       silent: true,
 
       org: 'inneis-site',
-      project: 'springtide',
+      project: 'Shiro',
     },
     {
       // For all available options, see:

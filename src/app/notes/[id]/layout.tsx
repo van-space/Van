@@ -1,14 +1,24 @@
 import { headers } from 'next/dist/client/components/headers'
 import type { Metadata } from 'next'
 
-import { BottomToUpTransitionView } from '~/components/ui/transition/BottomToUpTransitionView'
+import { BottomToUpSoftScaleTransitionView } from '~/components/ui/transition/BottomToUpSoftScaleTransitionView'
+import { OnlyMobile } from '~/components/ui/viewport/OnlyMobile'
+import { CommentAreaRoot } from '~/components/widgets/comment'
+import { NoteMainContainer } from '~/components/widgets/note/NoteMainContainer'
+import { TocFAB } from '~/components/widgets/toc/TocFAB'
 import { REQUEST_QUERY } from '~/constants/system'
 import { attachUA } from '~/lib/attach-ua'
 import { getSummaryFromMd } from '~/lib/markdown'
+import { getQueryClient } from '~/lib/query-client.server'
+import {
+  CurrentNoteDataProvider,
+  SyncNoteDataAfterLoggedIn,
+} from '~/providers/note/CurrentNoteDataProvider'
+import { CurrentNoteIdProvider } from '~/providers/note/CurrentNoteIdProvider'
 import { queries } from '~/queries/definition'
-import { getQueryClient } from '~/utils/query-client.server'
 
-import { Paper } from '../Paper'
+import { Paper } from '../../../components/layout/container/Paper'
+import { Transition } from './Transtion'
 
 export const generateMetadata = async ({
   params,
@@ -58,17 +68,33 @@ export default async (
   }>,
 ) => {
   attachUA()
-  const searchParams = new URLSearchParams(headers().get(REQUEST_QUERY) || '')
-
-  await getQueryClient().fetchQuery(
-    queries.note.byNid(
-      props.params.id,
-      searchParams.get('password') || undefined,
-    ),
+  const header = headers()
+  const searchParams = new URLSearchParams(header.get(REQUEST_QUERY) || '')
+  const id = props.params.id
+  const query = queries.note.byNid(
+    id,
+    searchParams.get('password') || undefined,
   )
+  const data = await getQueryClient().fetchQuery(query)
+
+  const { id: noteObjectId, allowComment } = data.data
+
   return (
-    <BottomToUpTransitionView>
-      <Paper>{props.children}</Paper>
-    </BottomToUpTransitionView>
+    <>
+      <CurrentNoteIdProvider noteId={id} />
+      <CurrentNoteDataProvider data={data} />
+      <SyncNoteDataAfterLoggedIn />
+
+      <Transition className="min-w-0">
+        <Paper as={NoteMainContainer}>{props.children}</Paper>
+        <BottomToUpSoftScaleTransitionView delay={500}>
+          <CommentAreaRoot refId={noteObjectId} allowComment={allowComment} />
+        </BottomToUpSoftScaleTransitionView>
+      </Transition>
+
+      <OnlyMobile>
+        <TocFAB />
+      </OnlyMobile>
+    </>
   )
 }

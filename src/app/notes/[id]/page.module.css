@@ -1,5 +1,9 @@
 .with-indent {
   :global {
+    .paragraph:first-child {
+      margin-bottom: 4rem;
+    }
+
     ul .indent,
     .paragraph .indent {
       border-bottom: 1px solid;
@@ -24,6 +28,10 @@
           padding: 10px 0;
           margin: 0;
         }
+
+        .paragraph:first-child {
+          margin-bottom: 0;
+        }
       }
 
       margin-left: calc(-3em + 2px);
@@ -32,7 +40,7 @@
       line-height: 1.8;
       padding: 1em 1em 1em 2em;
 
-      @apply bg-uk-cyan-light/10 font-normal dark:bg-uk-teal-light/10;
+      @apply bg-accent/20 font-normal dark:bg-accent/5;
       @apply border-none px-12 !outline-none;
 
       & span::first-letter {
@@ -72,6 +80,11 @@
       @apply font-serif;
 
       font-size: 16px;
+    }
+
+    strong,
+    b {
+      @apply font-sans;
     }
   }
 }

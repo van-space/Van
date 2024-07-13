@@ -4,18 +4,16 @@ import type { ReactNode } from 'react'
 import {
   FaSolidCircle,
   FaSolidCircleNotch,
-  FaSolidComment,
   FaSolidComments,
   FaSolidDotCircle,
   FaSolidFeatherAlt,
   FaSolidHistory,
   FaSolidSubway,
   FaSolidUserFriends,
-  IcBaselineLiveTv,
   IcTwotoneSignpost,
   IonBook,
   MdiFlask,
-  RiNeteaseCloudMusicLine,
+  MdiLightbulbOn20,
 } from '~/components/icons/menu-collection'
 
 export interface IHeaderMenu {
@@ -78,12 +76,12 @@ export const headerMenuConfig: IHeaderMenu[] = [
   {
     title: '其他',
     icon: h(FaSolidCircleNotch),
-    path: '/favorite/music',
+    path: '#',
     subMenu: [
       {
-        title: '之言',
-        icon: h(FaSolidComment),
-        path: '/recently',
+        title: '思考',
+        icon: h(MdiLightbulbOn20),
+        path: '/thinking',
       },
       {
         title: '项目',
@@ -94,17 +92,6 @@ export const headerMenuConfig: IHeaderMenu[] = [
         title: '一言',
         path: '/says',
         icon: h(FaSolidComments),
-      },
-      {
-        title: '听歌',
-        icon: h(RiNeteaseCloudMusicLine),
-        type: 'Music',
-        path: '/favorite/music',
-      },
-      {
-        title: '看番',
-        icon: h(IcBaselineLiveTv),
-        path: '/favorite/bangumi',
       },
     ],
   },

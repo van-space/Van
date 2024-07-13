@@ -1,5 +1,5 @@
 import { DialogContent, DialogPortal, Root } from '@radix-ui/react-dialog'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, m } from 'framer-motion'
 import { atom, useAtomValue, useSetAtom } from 'jotai'
 import type { HTMLMotionProps } from 'framer-motion'
 
@@ -7,7 +7,7 @@ import { MotionButtonBase } from '~/components/ui/button'
 import { DialogOverlay } from '~/components/ui/dlalog/DialogOverlay'
 import { useIsClient } from '~/hooks/common/use-is-client'
 import { useConfig } from '~/hooks/data/use-config'
-import { clsxm } from '~/utils/helper'
+import { clsxm } from '~/lib/helper'
 
 // TODO this component only use once in current page.
 const positionAtom = atom({
@@ -39,7 +39,7 @@ export const DonateButton = () => {
                   <DialogOverlay />
                   <DialogContent className="fixed inset-0 z-[11] flex flex-wrap space-x-4 overflow-auto center">
                     {donate.qrcode.map((src) => (
-                      <motion.img
+                      <m.img
                         exit={{ opacity: 0 }}
                         src={src}
                         alt="donate"
@@ -83,6 +83,7 @@ const DonateButtonTop = () => {
   const buttonPos = useAtomValue(positionAtom)
   return (
     <DonateButtonInternal
+      className="focus-visible:text-uk-brown-light focus-visible:!shadow-none"
       style={{
         position: 'fixed',
         left: buttonPos.x,
@@ -109,13 +110,14 @@ const DonateButtonInternal: Component<HTMLMotionProps<'button'>> = ({
   if (!donate) return null
   return (
     <MotionButtonBase
+      aria-label="Donate to author"
       className={clsxm('flex flex-col space-y-2', className)}
       onClick={() => {
         window.open(donate.link, '_blank')
       }}
       {...props}
     >
-      <i className="icon-[material-symbols--coffee] text-[24px] opacity-80 duration-200 hover:text-uk-brown-dark hover:opacity-100" />
+      <i className="icon-[material-symbols--coffee-outline-sharp] text-[24px] opacity-80 duration-200 hover:text-uk-brown-dark hover:opacity-100" />
     </MotionButtonBase>
   )
 }

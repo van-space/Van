@@ -1,13 +1,30 @@
-export enum Routes {
-  Home = '/',
+export const enum Routes {
+  Home = '',
+
   Posts = '/posts',
   Post = '/posts/',
+
   Notes = '/notes',
   Note = '/notes/',
-  NoteTopics = '/topics',
-  NoteTopic = '/topics/',
+  NoteTopics = '/notes/topics',
+  NoteTopic = '/notes/topics/',
+
   Timelime = '/timeline',
+
   Login = '/login',
+
+  Page = '/',
+
+  Categories = '/categories',
+  Category = '/categories/',
+
+  Projects = '/projects',
+  Project = '/projects/',
+
+  Says = '/says',
+  Friends = '/friends',
+
+  PageDeletd = '/common/deleted',
 }
 
 type Noop = never
@@ -33,8 +50,13 @@ type TimelineParams = {
   type: 'note' | 'post' | 'all'
   selectId?: string
 }
-type NoteTopicParams = {
+
+type OnlySlug = {
   slug: string
+}
+
+type OnlyId = {
+  id: string
 }
 export type RouteParams<T extends Routes> = T extends Routes.Home
   ? HomeParams
@@ -49,15 +71,21 @@ export type RouteParams<T extends Routes> = T extends Routes.Home
   : T extends Routes.Timelime
   ? TimelineParams
   : T extends Routes.NoteTopic
-  ? NoteTopicParams
+  ? OnlySlug
   : T extends Routes.NoteTopics
   ? Noop
-  : never
+  : T extends Routes.Page
+  ? OnlySlug
+  : T extends Routes.Category
+  ? OnlySlug
+  : T extends Routes.Project
+  ? OnlyId
+  : {}
 
-export const routeBuilder = <T extends Routes>(
+export function routeBuilder<T extends Routes>(
   route: T,
   params: RouteParams<typeof route>,
-) => {
+) {
   let href: string = route
   switch (route) {
     case Routes.Note: {
@@ -83,15 +111,21 @@ export const routeBuilder = <T extends Routes>(
       href += `?${new URLSearchParams(p as any).toString()}`
       break
     }
-    case Routes.NoteTopic: {
-      const p = params as NoteTopicParams
+    case Routes.NoteTopic:
+    case Routes.Category:
+    case Routes.Page: {
+      const p = params as OnlySlug
       href += p.slug
       break
     }
-    case Routes.NoteTopics:
-    case Routes.Notes:
-    case Routes.Login:
+
     case Routes.Home: {
+      href = '/'
+      break
+    }
+    case Routes.Project: {
+      const p = params as OnlyId
+      href += p.id
       break
     }
   }

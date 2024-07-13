@@ -5,29 +5,21 @@ import type { XLogMeta } from './types'
 
 import { Collapse } from '~/components/ui/collapse'
 import { useIsClient } from '~/hooks/common/use-is-client'
-import { useNoteData } from '~/hooks/data/use-note'
+import { useCurrentNoteDataSelector } from '~/providers/note/CurrentNoteDataProvider'
+import { useCurrentPostDataSelector } from '~/providers/post/CurrentPostDataProvider'
 
-// export const XLogInfoForPost: FC<{
-//   id: string
-// }> = ({ id }) => {
-//   const meta = usePostCollection((state) => state.data.get(id)?.meta?.xLog)
-
-//   if (!meta) return null
-
-//   return <XLogInfoBase meta={meta} />
-// }
+export const XLogInfoForPost: FC = () => {
+  const meta = useCurrentPostDataSelector((data) => data?.meta?.xLog)
+  return <XLogInfoBase meta={meta} />
+}
 
 export const XLogInfoForNote: FC = () => {
-  const data = useNoteData()
-
-  if (!data) return null
-
-  const meta = data.meta?.xLog
+  const meta = useCurrentNoteDataSelector((data) => data?.data.meta?.xLog)
   return <XLogInfoBase meta={meta} />
 }
 
 const XLogInfoBase: FC<{
-  meta?: XLogMeta
+  meta?: XLogMeta | null
 }> = ({ meta }) => {
   const [collapse, setCollapse] = useState(false)
 
@@ -90,20 +82,23 @@ const XLogInfoBase: FC<{
   }
 
   return (
-    <div className="my-6 text-sm [&_h4]:font-medium [&_section]:my-2">
+    <div
+      className="my-6 select-none text-sm [&_h4]:font-medium [&_section]:my-2"
+      data-hide-print
+    >
       <div
         role="button"
         tabIndex={0}
         className={clsx(
           '-mx-2 flex w-[100%+0.5rem] items-center justify-between rounded-lg p-2 text-left transition-colors duration-300 md:rounded-xl',
-          'hover:bg-zinc-100 dark:hover:bg-neutral-800',
+          'hover:bg-zinc-200 dark:hover:bg-neutral-800',
         )}
         onClick={() => {
           setCollapse((c) => !c)
         }}
       >
         <div className="flex w-full items-center justify-between">
-          <span className="flex flex-grow space-x-2">
+          <span className="flex flex-grow items-center space-x-2">
             <SafeIcon />
             <span>
               此数据所有权由区块链加密技术和智能合约保障仅归创作者所有。

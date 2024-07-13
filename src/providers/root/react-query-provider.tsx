@@ -27,7 +27,8 @@ const persister = {
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      cacheTime: 1000 * 60 * 5, // 5 minutes
+      staleTime: 1000 * 60 * 5, // 5 minutes
+
       refetchInterval: 1000 * 60 * 5, // 5 minutes
       refetchOnWindowFocus: false,
       refetchIntervalInBackground: false,
@@ -45,6 +46,9 @@ export const ReactQueryProvider = ({ children }: PropsWithChildren) => {
             shouldDehydrateQuery: (query) => {
               const queryIsReadyForPersistance =
                 query.state.status === 'success'
+
+              if (query.meta?.persist === false) return false
+
               if (queryIsReadyForPersistance) {
                 return !((query.state?.data as any)?.pages?.length > 1)
               } else {

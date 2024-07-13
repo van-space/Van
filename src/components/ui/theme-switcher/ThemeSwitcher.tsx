@@ -112,7 +112,7 @@ const ThemeIndicator = () => {
   if (!theme) return null
   return (
     <div
-      className="absolute top-[4px] z-[-1] h-[32px] w-[32px] rounded-full bg-base-100 shadow-[0_1px_2px_0_rgba(122,122,122,.2),_0_1px_3px_0_rgba(122,122,122,.1)] duration-200"
+      className="absolute top-[4px] z-[-1] h-[32px] w-[32px] rounded-full bg-base-100 shadow-[0_1px_2px_0_rgba(127.5,127.5,127.5,.2),_0_1px_3px_0_rgba(127.5,127.5,127.5,.1)] duration-200"
       style={{
         left: { light: 4, system: 36, dark: 68 }[theme],
       }}
@@ -172,16 +172,14 @@ const ButtonGroup = () => {
   return (
     <div
       role="radiogroup"
-      className="w-fit-content inline-flex rounded-full border border-slate-100 p-[3px] dark:border-neutral-800"
+      className="w-fit-content inline-flex rounded-full border border-slate-200 p-[3px] dark:border-neutral-800"
     >
       <button
         aria-checked="false"
         aria-label="Switch to light theme"
-        data-active="false"
-        data-theme-switcher="true"
         role="radio"
         type="button"
-        className={styles({})}
+        className={styles.base}
         onClick={() => {
           buildThemeTransition('light')
         }}
@@ -191,9 +189,7 @@ const ButtonGroup = () => {
       <button
         aria-checked="true"
         aria-label="Switch to system theme"
-        className={styles({})}
-        data-active="true"
-        data-theme-switcher="true"
+        className={styles.base}
         role="radio"
         type="button"
         onClick={() => {
@@ -205,9 +201,7 @@ const ButtonGroup = () => {
       <button
         aria-checked="false"
         aria-label="Switch to dark theme"
-        className={styles({})}
-        data-active="false"
-        data-theme-switcher="true"
+        className={styles.base}
         role="radio"
         type="button"
         onClick={() => {
