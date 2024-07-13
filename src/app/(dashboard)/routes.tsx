@@ -124,7 +124,7 @@ function attachRouteParent(route: DashboardRoute, parent?: DashboardRoute) {
 attachRouteParent(dashboardRoutes)
 
 export const flattedRoutes = [...dashboardRoute2ObjectMap.entries()].filter(
-  ([k, v]) => {
+  ([_k, v]) => {
     if (v.redirect) return false
     return true
   },

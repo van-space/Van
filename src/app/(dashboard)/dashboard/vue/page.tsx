@@ -1,7 +1,6 @@
 'use client'
 
 import { useLayoutEffect } from 'react'
-import { useRouter } from 'next/navigation'
 
 import { fetchAppUrl } from '~/atoms'
 import { useResolveAdminUrl } from '~/atoms/hooks'
@@ -9,7 +8,6 @@ import { FullPageLoading } from '~/components/ui/loading'
 
 export default function Page() {
   const toAdminUrl = useResolveAdminUrl()
-  const router = useRouter()
 
   useLayoutEffect(() => {
     const adminUrl = toAdminUrl()
@@ -23,6 +21,6 @@ export default function Page() {
         }
       })
     }
-  }, [router, toAdminUrl])
+  }, [toAdminUrl])
   return <FullPageLoading />
 }

@@ -1,6 +1,5 @@
 'use client'
 
-import React from 'react'
 import { m } from 'framer-motion'
 import Link from 'next/link'
 
@@ -59,7 +58,7 @@ export const ActivityPostList = () => {
       <Divider />
       <h2 className="text-2xl font-medium leading-loose">最近更新的手记</h2>
       <ul className="shiro-timeline mt-4">
-        {notes.map((note, i) => {
+        {notes.map((note, _i) => {
           return (
             <li key={note.id} className="flex min-w-0 justify-between">
               <Link

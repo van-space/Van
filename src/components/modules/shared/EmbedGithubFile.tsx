@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import React, { memo } from 'react'
+import { memo } from 'react'
 
 import { HighLighterPrismCdn } from '../../ui/code-highlighter'
 import { Loading } from '../../ui/loading'

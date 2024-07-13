@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { clsxm } from '~/lib/helper'
 
 export type LoadingProps = {

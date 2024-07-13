@@ -1,4 +1,4 @@
-import React, { useId, useMemo } from 'react'
+import { useId, useMemo } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import type { FC, ReactNode } from 'react'
 import type { ModalProps } from './types'

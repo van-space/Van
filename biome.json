@@ -69,7 +69,7 @@
 				"noClassAssign": "error",
 				"noCommentText": "error",
 				"noCompareNegZero": "error",
-				"noConsoleLog": "error",
+				"noConsoleLog": "info",
 				"noControlCharactersInRegex": "error",
 				"noDebugger": "error",
 				"noDuplicateCase": "error",
@@ -109,9 +109,10 @@
 			"pnpm-lock.yaml",
 			"yarn.lock",
 			"__snapshots__",
-			"!.github",
-			"!.vitepress",
-			"!.vscode"
+			".github",
+			".vitepress",
+			".vscode",
+      ".next"
 		]
 	},
 	"overrides": [

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { memo, useRef } from 'react'
+import { memo, useRef } from 'react'
 import clsx from 'clsx'
 import mediumZoom from 'medium-zoom'
 import Image from 'next/image'

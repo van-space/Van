@@ -1,4 +1,3 @@
-import React from 'react'
 import { Priority, simpleInlineRegex } from 'markdown-to-jsx'
 import type { MarkdownToJSX } from 'markdown-to-jsx'
 
